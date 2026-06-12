@@ -117,11 +117,7 @@ function computeOvIndex(articles) {
 
 export default async function handler(req, res) {
   // Verify this is called by Vercel Cron or manually with secret
-  const authHeader = req.headers['authorization'];
-  const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+
 
   console.log('[cron] Starting daily Overton calculation...');
 
