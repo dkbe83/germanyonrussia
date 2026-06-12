@@ -48,3 +48,4 @@ Visit: https://germanyonrussia.com/api/cron
 - rss2json.com: Free up to 10k requests/day
 - Domain: ~12€/year (already purchased)
 Total: ~12€/year
+
