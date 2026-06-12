@@ -1,0 +1,13 @@
+{
+  "name": "germanyonrussia",
+  "version": "1.0.0",
+  "description": "GermanyOnRussia.com — Automated Overton Window Monitor",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@vercel/kv": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
