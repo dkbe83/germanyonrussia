@@ -1,8 +1,15 @@
 // /api/cron.js
 // Runs daily at 05:00 UTC via Vercel Cron
-// Fetches RSS → computes Overton sentiment → stores in KV
+// Fetches RSS → computes Overton sentiment → stores in Redis
 
-import { kv } from '@vercel/kv';
+import { createClient } from 'redis';
+
+async function getRedisClient() {
+  const client = createClient({ url: process.env.REDIS_URL });
+  client.on('error', err => console.error('Redis error:', err));
+  await client.connect();
+  return client;
+}
 
 const RSS_SOURCES = [
   'https://www.tagesschau.de/xml/rss2/',
@@ -139,16 +146,21 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: false, reason: 'No articles found' });
   }
 
-  // Store today's value
-  const dateKey = `overton:${ovData.date}`;
-  await kv.set(dateKey, ovData, { ex: 60 * 60 * 24 * 400 }); // keep 400 days
-
-  // Update the "latest" key for fast access
-  await kv.set('overton:latest', ovData);
-
-  // Append to time series list (keep last 400 days)
-  await kv.lpush('overton:series', JSON.stringify(ovData));
-  await kv.ltrim('overton:series', 0, 399);
+  // Store in Redis
+  let redisClient;
+  try {
+    redisClient = await getRedisClient();
+    const dateKey = `overton:${ovData.date}`;
+    await redisClient.set(dateKey, JSON.stringify(ovData), { EX: 60 * 60 * 24 * 400 });
+    await redisClient.set('overton:latest', JSON.stringify(ovData), { EX: 60 * 60 * 24 * 400 });
+    await redisClient.lPush('overton:series', JSON.stringify(ovData));
+    await redisClient.lTrim('overton:series', 0, 399);
+    await redisClient.quit();
+  } catch (e) {
+    console.error('[cron] Redis error:', e);
+    if (redisClient) await redisClient.quit().catch(() => {});
+    return res.status(500).json({ ok: false, error: 'Redis storage failed: ' + e.message });
+  }
 
   console.log(`[cron] Stored Overton value: center=${ovData.center}, width=${ovData.width}`);
 
