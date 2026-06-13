@@ -725,23 +725,46 @@ const RSS_SOURCES = [
 ];
 
 const RUSSIA_KW = [
-  // German
-  'russland','russisch','ukraine','krieg','putin','moskau','sanktion',
-  'waffenstillstand','verhandlung','kriegsmüdigkeit','nato','krim',
-  'donbass','donezk','luhansk','zelenski','selenskyj','lawrow','medwedew',
-  'annexion','zeitenwende','scholz','baerbock','ostpolitik','wagner',
-  'nordstream','lukaschenko','belarus','moldau','georgien',
-  // English
-  'russia','russian','ukraine','ukrainian','putin','moscow','sanction',
-  'ceasefire','negotiation','kremlin','zelensky','lavrov','nato','crimea',
-  'donbas','annexation','wagner','meduza','bucha','mariupol',
+  // German — specific named entities only
+  'russland','russisch','russische','russischen','russischer','russlands',
+  'ukraine','ukrainisch','ukrainische','putin','moskau','kreml',
+  'selenskyj','lawrow','medwedew','lukaschenko',
+  'waffenstillstand','kriegsmüdigkeit','ostpolitik',
+  'nordstream','nord stream','wagner','belarus','krim',
+  'donbass','donezk','luhansk','annexion','zeitenwende',
+  // English — named entities only
+  'russia','russian','ukraine','ukrainian','putin','moscow','kremlin',
+  'zelensky','zelenskyy','lavrov','medvedev','crimea','donbas',
+  'bucha','mariupol','kherson','zaporizhzhia','kharkiv',
+  'nordstream','nord stream','wagner group','meduza',
   // French
-  'russie','ukraine','poutine','sanctions','négociation','guerre',
+  'russie','ukraine','poutine','kremlin',
+];
+
+// Hard exclusions — if title contains these AND no strong Russia entity → skip
+const EXCLUDE_TITLE_KW = [
+  'iran','israel','gaza','hamas','libanon','lebanon','syrien','syria',
+  'china','taiwan','nordkorea','north korea','afghanistan','tren de aragua',
+  'venezuela','mexiko','mexico','türkei','erdogan','indien','india',
+  'klimakonferenz','bundesliga','formel 1','formel1','tour de france',
+];
+
+// Strong Russia entities — if any present, override exclusion
+const STRONG_RUSSIA = [
+  'russland','russia','russian','ukraine','ukrainisch','putin','kreml','kremlin',
+  'selenskyj','zelensky','moskau','moscow','krim','crimea',
 ];
 
 function isRussiaRelated(text){
-  const t = text.toLowerCase();
-  return RUSSIA_KW.some(k => t.includes(k));
+  // Only check TITLE, not full article text — reduces false positives from nav/metadata
+  const t = text.toLowerCase().slice(0, 200); // first 200 chars = title + short desc
+  // Must contain a Russia keyword
+  if(!RUSSIA_KW.some(k => t.includes(k))) return false;
+  // If strong Russia entity present → always include
+  if(STRONG_RUSSIA.some(k => t.includes(k))) return true;
+  // Check exclusions
+  if(EXCLUDE_TITLE_KW.some(k => t.includes(k))) return false;
+  return true;
 }
 
 function timeAgo(dateStr){
@@ -753,21 +776,58 @@ function timeAgo(dateStr){
   return `${Math.floor(diff/1440)}d ago`;
 }
 
+// Improved sentiment — detects negation patterns
 function sentimentFromTitle(title){
   const t = title.toLowerCase();
-  const neg = ['angriff','attack','krieg','war','eskalation','escalation','drohne','drone','rakete','missile','sanktion','sanction','repression','verhaftet','arrested','tote','dead','opfer','casualt','bombardier'];
-  const pos = ['verhandlung','negotiat','waffenstillstand','ceasefire','frieden','peace','dialog','einigung','agreement','diplomatie','diplomacy'];
-  if(neg.some(k=>t.includes(k))) return 'neg';
-  if(pos.some(k=>t.includes(k))) return 'pos';
+
+  // Negation patterns: "kein Frieden", "no ceasefire", "Verhandlungen scheitern"
+  const negateNext = ['kein','keine','keinen','no ','not ','ohne','scheitern','scheitert',
+    'gescheitert','abgelehnt','abgelehnte','verweigert','unmöglich','nie'];
+  const hasNegation = negateNext.some(n => t.includes(n));
+
+  const negKW = [
+    'angriff','offensive','bombardier','rakete','drohne','missile','drone',
+    'eskalation','escalat','verhaftet','arrested','tote','opfer','casualt',
+    'repression','annexion','annexat','besatzung','occupation',
+    'kriegsverbrechen','war crime','sanctions tighten','sanktionen verschärft',
+    'abschiessen','abschuss','beschuss','shelling',
+  ];
+
+  const posKW = [
+    'waffenstillstand','ceasefire','friedensgespräch','peace talk',
+    'waffenruhe','einigung','agreement','diplomatie','diplomacy',
+    'verhandlungslösung','negotiated','deeskalation','de-escalat',
+    'kriegsmüdigkeit','war fatigue','gesprächsbereitschaft',
+  ];
+
+  const negCount = negKW.filter(k => t.includes(k)).length;
+  const posCount = posKW.filter(k => t.includes(k)).length;
+
+  // "Verhandlungen scheitern" → negation of positive = still negative
+  if(posCount > 0 && hasNegation && negCount === 0) return 'neg';
+  if(negCount > posCount) return 'neg';
+  if(posCount > negCount) return 'pos';
+
+  // Fallback: general conflict language = slightly negative
+  const conflictKW = ['krieg','war ','conflict','fighting','battle','kampf','gefecht'];
+  if(conflictKW.some(k => t.includes(k))) return 'neg';
+
   return 'neu';
 }
 
 function ovFromTitle(title){
   const t = title.toLowerCase();
-  if(t.includes('waffenstillstand')||t.includes('ceasefire')||t.includes('verhandl')||t.includes('negotiat')) return '→ Dialogue position in play';
-  if(t.includes('sanktion')||t.includes('sanction')||t.includes('waffen')||t.includes('weapon')) return '→ Hawkish framing dominant';
-  if(t.includes('kriegsmüd')||t.includes('war fatigue')||t.includes('frieden')||t.includes('peace')) return '→ Window drift signal';
-  if(t.includes('nato')||t.includes('angriff')||t.includes('attack')||t.includes('drohne')) return '→ Security framing reinforced';
+  if(t.includes('waffenstillstand')||t.includes('ceasefire')||
+     t.includes('friedensgespräch')||t.includes('peace talk')||
+     t.includes('verhandlungslösung')) return '→ Dialogue position in play';
+  if(t.includes('kriegsmüdigkeit')||t.includes('war fatigue')||
+     t.includes('waffenruhe')||t.includes('deeskalation')) return '→ Window drift signal — dialogue pressure growing';
+  if(t.includes('sanktion')||t.includes('sanction')||
+     t.includes('waffenlieferung')||t.includes('arms delivery')) return '→ Hawkish framing dominant';
+  if(t.includes('angriff')||t.includes('attack')||t.includes('offensive')||
+     t.includes('rakete')||t.includes('drohne')||t.includes('missile')) return '→ Security framing reinforced — window narrows';
+  if(t.includes('verhandl')||t.includes('negotiat')||
+     t.includes('diplomatie')||t.includes('diplomacy')) return '→ Negotiation discourse active';
   return '→ Russia discourse active';
 }
 
@@ -964,145 +1024,16 @@ function applyLiveOverton(ovData) {
 
 
 // Fallback static data shown while live data loads
+// ─── POLLS — via /api/polls (server-side with Redis cache) ───
 const POLL_FALLBACK = [
-  {src:'ARD-Deutschlandtrend',time:'Jun 2025',sent:'neu',title:'38% support ceasefire even under territorial loss — new record high',quote:'"For the first time willingness to negotiate is above 30% in all age groups."',ov:'→ Negotiation leaves the extreme segment',score:38,url:'https://www.tagesschau.de/inland/deutschlandtrend/'},
-  {src:'Forsa / Stern',time:'May 2025',sent:'neg',title:'67% see Russia as a permanent security threat to Germany',quote:'"The threat perception has become structurally ingrained."',ov:'→ Isolation narrative anchored long-term',score:67,url:'https://www.stern.de/politik/deutschland/forsa-umfrage/'},
-  {src:'ZDF-Politbarometer',time:'May 2025',sent:'neu',title:'BSW voters 71% pro-negotiation / CDU 44% / SPD 51%',quote:'"The divide is now party identity, not East-West geography."',ov:'→ Window splits along party lines',score:54,url:'https://www.zdf.de/politik/politbarometer'},
-  {src:'Reuters/Ipsos',time:'Apr 2025',sent:'neg',title:'Trust in Russian media: 8% — slightly up versus 2024',quote:'"More Germans actively seek Russian-language alternative sources."',ov:'→ Disinformation narrative persists',score:72,url:'https://www.ipsos.com/en/digital-news-report'},
-  {src:'Forschungsgruppe Wahlen',time:'Mar 2025',sent:'pos',title:'54% now distinguish between Putin regime and Russian population',quote:'"Putin is not Russia — new analytical maturity opens space."',ov:'→ Differentiation discourse grows',score:28,url:'https://www.forschungsgruppe.de/'},
+  {src:'ARD-Deutschlandtrend',time:'Jun 2025',sent:'neu',title:'38% support ceasefire even under territorial loss — new record high',quote:'For the first time willingness to negotiate is above 30% in all age groups.',ov:'→ Negotiation leaves the extreme segment',score:38,url:'https://www.tagesschau.de/inland/deutschlandtrend/'},
+  {src:'Forsa / Stern',time:'May 2025',sent:'neg',title:'67% see Russia as a permanent security threat to Germany',quote:'The threat perception has become structurally ingrained — regardless of how the war ends.',ov:'→ Isolation narrative anchored long-term',score:67,url:'https://www.stern.de/politik/deutschland/forsa-umfrage/'},
+  {src:'ZDF-Politbarometer',time:'May 2025',sent:'neu',title:'BSW voters 71% pro-negotiation · CDU 44% · SPD 51%',quote:'The divide is now party identity, not East-West geography.',ov:'→ Window splits along party lines',score:54,url:'https://www.zdf.de/politik/politbarometer'},
+  {src:'Reuters/Ipsos',time:'Apr 2025',sent:'neg',title:'Trust in Russian media: 8% — slightly up vs. 2024',quote:'More Germans actively seek Russian-language alternative sources.',ov:'→ Disinformation narrative persists',score:72,url:'https://www.ipsos.com/en/digital-news-report'},
+  {src:'Forschungsgruppe Wahlen',time:'Mar 2025',sent:'pos',title:'54% now distinguish between Putin regime and Russian population',quote:'Putin is not Russia — new analytical maturity opens conversational space.',ov:'→ Differentiation discourse grows',score:28,url:'https://www.forschungsgruppe.de/'},
 ];
 
-// Option A: Wikipedia — scrape opinion polling article via REST API
-async function fetchWikipediaPolls() {
-  try {
-    // Fetch the Wikipedia article on German opinion polling
-    const url = 'https://en.wikipedia.org/api/rest_v1/page/html/Opinion_polling_for_the_2025_German_federal_election';
-    const r = await fetch(RSS2JSON + encodeURIComponent(url), {signal: AbortSignal.timeout(8000)});
-    if(!r.ok) return [];
-    const d = await r.json();
-    const html = d.contents || '';
-    // Parse tables — look for rows with polling institute names
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const rows = [...doc.querySelectorAll('table tr')].slice(1, 12);
-    const results = [];
-    rows.forEach(row => {
-      const cells = [...row.querySelectorAll('td,th')].map(c => c.textContent.trim());
-      if(cells.length < 4) return;
-      const institute = cells[0];
-      const date = cells[1] || cells[2] || '';
-      const spd = parseFloat(cells[3]) || 0;
-      const cdu = parseFloat(cells[4]) || 0;
-      const afd = parseFloat(cells[5]) || 0;
-      const bsw = parseFloat(cells[8]) || parseFloat(cells[7]) || 0;
-      if(!institute || institute.length > 40) return;
-      // Derive Russia-discourse relevance from party polling
-      // High AfD/BSW = more dialog-window pressure; High Greens/CDU hawkish = narrower
-      const dialogPressure = Math.round(afd + bsw);
-      const hawkishPressure = Math.round(cdu * 0.4);
-      const sent = dialogPressure > 25 ? 'pos' : dialogPressure > 18 ? 'neu' : 'neg';
-      results.push({
-        src: `Wikipedia · ${institute}`,
-        time: date,
-        sent,
-        title: `${institute}: AfD+BSW at ${dialogPressure}% — combined dialogue-leaning vote share`,
-        quote: `CDU/CSU ${cdu}% · SPD ${spd}% · AfD ${afd}% · BSW ${bsw}%. High AfD+BSW correlates with greater negotiation sentiment in Russia discourse.`,
-        ov: dialogPressure > 25
-          ? '→ Strong dialogue-window pressure from electoral base'
-          : '→ Status-quo majority holds in electoral base',
-        score: Math.min(95, dialogPressure * 2),
-        url: 'https://en.wikipedia.org/wiki/Opinion_polling_for_the_2025_German_federal_election',
-      });
-    });
-    return results.slice(0, 5);
-  } catch(e) { return []; }
-}
-
-// Option C: Pollofpolls.eu — parse their aggregated German poll data
-async function fetchPollofpolls() {
-  try {
-    const url = 'https://www.pollofpolls.eu/?cmd=Bundestagswahl&lang=en';
-    const r = await fetch(RSS2JSON + encodeURIComponent(url), {signal: AbortSignal.timeout(8000)});
-    if(!r.ok) return [];
-    const d = await r.json();
-    const html = d.contents || '';
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    // Extract latest poll averages from the summary table
-    const rows = [...doc.querySelectorAll('table tr')].slice(0, 8);
-    const results = [];
-    let latestDate = '';
-    rows.forEach(row => {
-      const cells = [...row.querySelectorAll('td,th')].map(c => c.textContent.trim());
-      if(cells.length < 3) return;
-      const party = cells[0];
-      const avg = parseFloat(cells[1]) || 0;
-      const trend = cells[2] || '';
-      if(!party || avg === 0) return;
-      if(party.toLowerCase().includes('date') || party.toLowerCase().includes('poll')) {
-        latestDate = cells[1]; return;
-      }
-      if(['AfD','BSW','Linke'].includes(party) && avg > 5) {
-        const dialogScore = Math.round(avg * 1.8);
-        results.push({
-          src: 'Pollofpolls.eu',
-          time: latestDate || new Date().toLocaleDateString('en-GB',{month:'short',year:'numeric'}),
-          sent: avg > 15 ? 'pos' : 'neu',
-          title: `Poll average: ${party} at ${avg}% — ${trend} — Overton relevance: dialogue bloc`,
-          quote: `Aggregated average across all published polls. ${party} voters show significantly higher negotiation preference in Russia discourse surveys.`,
-          ov: `→ ${party} at ${avg}% signals ${avg > 15 ? 'strong' : 'moderate'} dialogue-window pressure`,
-          score: dialogScore,
-          url: 'https://www.pollofpolls.eu/?cmd=Bundestagswahl&lang=en',
-        });
-      }
-    });
-    // Also add a summary entry if we got data
-    if(results.length > 0) {
-      const totalDialog = results.reduce((s,r) => s + (parseFloat(r.title.match(/(\d+\.?\d*)%/)?.[1])||0), 0);
-      results.unshift({
-        src: 'Pollofpolls.eu · Aggregate',
-        time: latestDate || new Date().toLocaleDateString('en-GB',{month:'short',year:'numeric'}),
-        sent: totalDialog > 22 ? 'pos' : 'neu',
-        title: `Combined dialogue-leaning parties (AfD+BSW+Linke): ${Math.round(totalDialog)}% aggregate`,
-        quote: 'Pollofpolls.eu rolling average across all published German federal polls. Dialogue-leaning bloc defined as parties whose voters show >55% negotiation preference in Russia surveys.',
-        ov: totalDialog > 25 ? '→ Dialogue bloc exceeds 25% — Overton Window under significant pressure' : '→ Dialogue bloc below 25% — Status quo majority holds',
-        score: Math.min(90, Math.round(totalDialog * 2.2)),
-        url: 'https://www.pollofpolls.eu/?cmd=Bundestagswahl&lang=en',
-      });
-    }
-    return results.slice(0, 5);
-  } catch(e) { return []; }
-}
-
-// Also fetch Tagesschau Deutschlandtrend RSS for latest poll articles
-async function fetchDeutschlandtrend() {
-  try {
-    const url = 'https://www.tagesschau.de/xml/rss2/';
-    const r = await fetch(RSS2JSON + encodeURIComponent(url), {signal: AbortSignal.timeout(8000)});
-    if(!r.ok) return [];
-    const d = await r.json();
-    if(!d.items) return [];
-    const pollKW = ['deutschlandtrend','umfrage','forsa','politbarometer','meinungsforschung','poll','survey','prozent'];
-    return d.items
-      .filter(item => {
-        const t = (item.title + ' ' + (item.description||'')).toLowerCase();
-        return pollKW.some(k => t.includes(k)) && isRussiaRelated(t);
-      })
-      .slice(0, 3)
-      .map(item => ({
-        src: 'Tagesschau · Live',
-        time: timeAgo(item.pubDate),
-        sent: sentimentFromTitle(item.title),
-        title: item.title,
-        quote: (item.description||'').replace(/<[^>]+>/g,'').trim().slice(0, 160),
-        ov: ovFromTitle(item.title),
-        score: 45,
-        url: item.link || 'https://www.tagesschau.de/inland/deutschlandtrend/',
-      }));
-  } catch(e) { return []; }
-}
-
-function renderPollItems(items, feedEl) {
+function renderPollItems(items, el) {
   items.forEach(item => {
     const cls = item.sent==='neg'?'s-neg':item.sent==='pos'?'s-pos':'s-neu';
     const fillColor = item.sent==='neg'?'rgba(139,26,0,0.6)':item.sent==='pos'?'rgba(26,74,42,0.6)':'rgba(28,63,122,0.55)';
@@ -1116,7 +1047,7 @@ function renderPollItems(items, feedEl) {
         <span class="f-badge ${cls}">${item.sent.toUpperCase()}</span>
       </div>
       <div class="f-title">${item.title}</div>
-      ${item.quote ? `<div class="f-quote">${item.quote}</div>` : ''}
+      ${item.quote?`<div class="f-quote">${item.quote}</div>`:''}
       <div class="f-ov">${item.ov}</div>
       <div class="f-score-row">
         <span style="font-size:9px;color:var(--muted2);width:52px">Sentiment</span>
@@ -1125,62 +1056,57 @@ function renderPollItems(items, feedEl) {
       </div>
       <div style="font-size:9px;color:var(--blue3);margin-top:4px;letter-spacing:.04em">↗ Source</div>`;
     div.onclick = () => window.open(item.url, '_blank', 'noopener');
-    feedEl.appendChild(div);
+    el.appendChild(div);
   });
 }
 
 async function loadPolls() {
   const loadEl = document.getElementById('polls-loading');
   const feedEl = document.getElementById('pollsFeed');
+  feedEl.innerHTML = '';
 
   // Show fallback immediately
-  feedEl.innerHTML = '';
   renderPollItems(POLL_FALLBACK, feedEl);
 
-  // Show loading indicator for live data
+  // Show live loading indicator
   const liveBar = document.createElement('div');
   liveBar.style.cssText = 'font-size:10px;color:var(--blue3);padding:8px 0;display:flex;align-items:center;gap:6px;border-top:1px solid var(--line)';
-  liveBar.innerHTML = '<div class="ld-spin"></div> Fetching live poll data from Wikipedia & Pollofpolls.eu…';
+  liveBar.innerHTML = '<div class="ld-spin"></div> Fetching live poll data…';
   feedEl.prepend(liveBar);
 
-  // Fetch all three sources in parallel
-  const [wikiItems, popItems, dtItems] = await Promise.all([
-    fetchWikipediaPolls(),
-    fetchPollofpolls(),
-    fetchDeutschlandtrend(),
-  ]);
+  try {
+    // Call our own /api/polls endpoint (server-side, Redis-cached)
+    const r = await fetch('/api/polls', {signal: AbortSignal.timeout(10000)});
+    if(!r.ok) throw new Error(r.status);
+    const d = await r.json();
 
-  // Remove loading bar
-  liveBar.remove();
+    liveBar.remove();
 
-  const liveItems = [...dtItems, ...wikiItems, ...popItems];
+    if(d.ok && d.data && d.data.length > 0) {
+      feedEl.innerHTML = '';
 
-  if(liveItems.length > 0) {
-    // Add section header for live data
-    const hdr = document.createElement('div');
-    hdr.style.cssText = 'font-size:9px;font-weight:500;color:var(--blue3);letter-spacing:.1em;text-transform:uppercase;padding:10px 0 6px;border-bottom:1px solid var(--line);margin-bottom:4px';
-    hdr.textContent = `Live data — ${liveItems.length} sources loaded`;
-    feedEl.prepend(hdr);
-    // Prepend live items
-    const tmpEl = document.createElement('div');
-    renderPollItems(liveItems, tmpEl);
-    [...tmpEl.children].reverse().forEach(child => feedEl.insertAfter ? feedEl.insertAfter(child, hdr) : feedEl.insertBefore(child, hdr.nextSibling));
+      // Header showing source
+      const hdr = document.createElement('div');
+      hdr.style.cssText = 'font-size:9px;font-weight:500;color:var(--blue3);letter-spacing:.1em;text-transform:uppercase;padding:6px 0 8px;border-bottom:1px solid var(--line);margin-bottom:4px';
+      hdr.textContent = d.source === 'live'
+        ? `Live data — ${d.liveCount} current sources + curated baseline`
+        : 'Curated baseline data · Live sources temporarily unavailable';
+      feedEl.appendChild(hdr);
 
-    // Add separator before fallback
-    const sep = document.createElement('div');
-    sep.style.cssText = 'font-size:9px;font-weight:500;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;padding:10px 0 6px;border-top:1px solid var(--line);margin-top:8px';
-    sep.textContent = 'Curated baseline data';
-    feedEl.insertBefore(sep, feedEl.querySelector('.feed-item'));
-  } else {
-    // All live fetches failed — fallback is already shown, just note it
+      renderPollItems(d.data, feedEl);
+    }
+  } catch(e) {
+    liveBar.remove();
+    // Fallback already shown — just note it
     const note = document.createElement('div');
-    note.style.cssText = 'font-size:10px;color:var(--muted2);padding:6px 0;font-style:italic';
-    note.textContent = 'Live poll sources currently unavailable — showing curated data.';
+    note.style.cssText = 'font-size:10px;color:var(--muted2);padding:5px 0;font-style:italic';
+    note.textContent = 'Live poll endpoint unavailable — showing curated data.';
     feedEl.prepend(note);
   }
 
   feedsLoaded.polls = true;
 }
+
 
 async function refreshFeed(){
   feedsLoaded={news:false,polls:false};
@@ -1336,22 +1262,22 @@ function renderSuggestedChips(accounts, containerId) {
 
 // ─── NITTER RSS FEEDS (X List mirror) ────────────────────────
 // Multiple Nitter instances as fallback — public, no auth needed
-const NITTER_INSTANCES = [
-  'https://nitter.privacydev.net',
-  'https://nitter.poast.org',
-  'https://nitter.1d4.us',
-];
-
 const X_LISTS = {
   experts: '2065408650881998940',
   reach:   '2065413177911763352',
 };
 
-async function fetchNitterList(listId) {
-  for(const instance of NITTER_INSTANCES) {
+const RSSHUB_INSTANCES = [
+  'https://rsshub.app',
+  'https://rsshub.rssforever.com',
+  'https://hub.slarker.me',
+];
+
+async function fetchXListRSS(listId) {
+  for(const instance of RSSHUB_INSTANCES) {
     try {
-      const rssUrl = `${instance}/i/lists/${listId}/rss`;
-      const r = await fetch(RSS2JSON + encodeURIComponent(rssUrl), {signal: AbortSignal.timeout(8000)});
+      const rssUrl = `${instance}/twitter/list/i/lists/${listId}`;
+      const r = await fetch(RSS2JSON + encodeURIComponent(rssUrl), {signal: AbortSignal.timeout(9000)});
       if(!r.ok) continue;
       const d = await r.json();
       if(d.status !== 'ok' || !d.items?.length) continue;
@@ -1364,15 +1290,18 @@ async function fetchNitterList(listId) {
       }));
     } catch(e) { continue; }
   }
-  return null; // all instances failed
+  return null;
 }
 
-function renderNitterFeed(items, feedEl) {
+function renderXFeed(items, feedEl, listId) {
   feedEl.innerHTML = '';
   if(!items || !items.length) {
-    feedEl.innerHTML = `<div style="padding:16px 0;font-size:12px;color:var(--muted);text-align:center">
-      Posts currently unavailable via RSS bridge.<br>
-      <a href="#" style="color:var(--blue2);font-size:11px;margin-top:6px;display:inline-block">Open list directly on X ↗</a>
+    feedEl.innerHTML = `<div style="padding:20px 0;text-align:center">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Live posts currently unavailable — RSS bridge temporarily down.</div>
+      <a href="https://x.com/i/lists/${listId}" target="_blank" rel="noopener"
+         style="font-size:11px;font-weight:500;padding:7px 16px;background:var(--blue2);color:#fff;text-decoration:none;border-radius:1px;display:inline-block">
+        ↗ Open list directly on X
+      </a>
     </div>`;
     return;
   }
@@ -1398,14 +1327,12 @@ function renderNitterFeed(items, feedEl) {
 }
 
 async function loadNitterFeeds() {
-  // Load both in parallel
   const [expertsItems, reachItems] = await Promise.all([
-    fetchNitterList(X_LISTS.experts),
-    fetchNitterList(X_LISTS.reach),
+    fetchXListRSS(X_LISTS.experts),
+    fetchXListRSS(X_LISTS.reach),
   ]);
-
-  renderNitterFeed(expertsItems, document.getElementById('nitter-experts-feed'));
-  renderNitterFeed(reachItems,   document.getElementById('nitter-reach-feed'));
+  renderXFeed(expertsItems, document.getElementById('nitter-experts-feed'), X_LISTS.experts);
+  renderXFeed(reachItems, document.getElementById('nitter-reach-feed'), X_LISTS.reach);
 }
 
 // Remove old loadXList references
