@@ -14,13 +14,16 @@ async function getRedisClient() {
 
 // Subreddits with relevant Germany/Russia discourse
 const SUBREDDITS = [
-  { name: 'de', weight: 1.4 },           // Largest German-language subreddit
-  { name: 'ich_iel', weight: 0.6 },       // German culture, lighter
-  { name: 'europe', weight: 1.0 },        // European perspective
-  { name: 'geopolitics', weight: 1.2 },   // Expert-level analysis
-  { name: 'ukraine', weight: 1.3 },       // Ukraine-focused
-  { name: 'worldnews', weight: 0.8 },     // Global news with Germany filter
-  { name: 'germany', weight: 1.1 },       // English-language Germany subreddit
+  { name: 'de', weight: 1.4 },
+  { name: 'europe', weight: 1.0 },
+  { name: 'geopolitics', weight: 1.2 },
+  { name: 'ukraine', weight: 1.3 },
+  { name: 'worldnews', weight: 0.9 },
+  { name: 'germany', weight: 1.1 },
+  { name: 'UkraineWarVideoReport', weight: 0.8 },
+  { name: 'UkraineConflict', weight: 1.0 },
+  { name: 'russianmemes', weight: 0.5 },
+  { name: 'EuropeanFederalists', weight: 0.7 },
 ];
 
 const RUSSIA_KW = [
@@ -82,18 +85,37 @@ function ovFromPost(title, sent) {
 
 async function fetchSubreddit(subreddit, limit = 10) {
   try {
-    const url = `https://www.reddit.com/r/${subreddit}/hot.json?limit=25&raw_json=1`;
-    const r = await fetch(url, {
-      headers: { 'User-Agent': 'GermanyOnRussia/1.0 Overton Window Monitor' },
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!r.ok) return [];
-    const d = await r.json();
-    const posts = d?.data?.children || [];
+    // Try search endpoint first (more reliable, better filtering)
+    const searchUrl = `https://www.reddit.com/r/${subreddit}/search.json?q=russia+OR+ukraine+OR+russland+OR+putin&sort=hot&t=week&limit=15&raw_json=1&restrict_sr=1`;
+    const hotUrl = `https://www.reddit.com/r/${subreddit}/hot.json?limit=25&raw_json=1`;
+    
+    let posts = [];
+    
+    // Try search first
+    try {
+      const r = await fetch(searchUrl, {
+        headers: { 'User-Agent': 'GermanyOnRussiaMonitor/1.0 (academic research; contact: info@germanyonrussia.com)' },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (r.ok) {
+        const d = await r.json();
+        posts = d?.data?.children?.map(p => p.data) || [];
+      }
+    } catch(e) {}
+    
+    // Fallback to hot if search returned nothing
+    if (posts.length === 0) {
+      const r = await fetch(hotUrl, {
+        headers: { 'User-Agent': 'GermanyOnRussiaMonitor/1.0 (academic research; contact: info@germanyonrussia.com)' },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!r.ok) return [];
+      const d = await r.json();
+      posts = d?.data?.children?.map(p => p.data) || [];
+    }
 
     return posts
-      .map(p => p.data)
-      .filter(p => p && !p.stickied && p.score > 5)
+      .filter(p => p && !p.stickied && p.score > 2)
       .filter(p => isRelevant(p.title + ' ' + (p.selftext || '')))
       .slice(0, limit)
       .map(p => {

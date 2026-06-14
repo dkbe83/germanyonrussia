@@ -68,8 +68,10 @@ async function fetchListTweets(listId, maxResults = 20) {
     const users = {};
     (d.includes?.users || []).forEach(u => { users[u.id] = u; });
 
+    // List is already curated — show all posts, filter only obvious non-Russia content
+    const HARD_EXCLUDE = ['bundesliga','formel 1','basketball','fußball','weather','wetter'];
     return d.data
-      .filter(tweet => isRelevant(tweet.text))
+      .filter(tweet => !HARD_EXCLUDE.some(k => tweet.text.toLowerCase().includes(k)))
       .map(tweet => {
         const user = users[tweet.author_id] || {};
         return {
