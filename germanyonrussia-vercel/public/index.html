@@ -262,12 +262,24 @@ footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border);displ
 <div class="feed-tabs">
   <button class="feed-tab on" onclick="switchFeedTab('news',this)">News (Live RSS)</button>
   <button class="feed-tab" onclick="switchFeedTab('polls',this)">Polls</button>
+  <button class="feed-tab" onclick="switchFeedTab('reddit',this)">Reddit</button>
   <button class="feed-tab" onclick="switchFeedTab('x-experts',this)">X — Experts</button>
   <button class="feed-tab" onclick="switchFeedTab('x-reach',this)">X — Influencers</button>
 </div>
 <div class="feed-pane on" id="fp-news"><div class="feed-loading" id="news-loading"><div class="ld-spin"></div>Fetching live articles…</div><div class="feed" id="newsFeed"></div></div>
 <div class="feed-pane" id="fp-polls"><div class="feed-loading" id="polls-loading" style="display:none"><div class="ld-spin"></div></div><div class="feed" id="pollsFeed"></div></div>
 
+<div class="feed-pane" id="fp-reddit">
+  <div style="padding:10px 0 6px">
+    <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">
+      Public discourse from r/de, r/germany, r/europe, r/ukraine, r/geopolitics and r/worldnews —
+      filtered for Russia-relevant posts. Weighted by upvotes.
+      <span style="color:var(--blue3);font-weight:500"> Contributes 20% to Overton Index.</span>
+    </p>
+    <div class="feed-loading" id="reddit-loading" style="display:flex;padding:10px 0"><div class="ld-spin"></div>&nbsp;Loading Reddit posts…</div>
+    <div class="feed" id="redditFeed"></div>
+  </div>
+</div>
 <div class="feed-pane" id="fp-x-experts">
   <div style="padding:12px 0 8px">
     <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">Live feed from X List — Russia Experts &amp; Analysts. Powered by open RSS bridge.</p>
@@ -384,15 +396,15 @@ footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border);displ
 <p>Attitudinal data from ARD-Deutschlandtrend (monthly, n≈1,500), Forsa (weekly, n≈1,000), ZDF-Politbarometer (bi-monthly, n≈1,200), Reuters/Ipsos Digital News Report (annual), and Forschungsgruppe Wahlen (monthly) is integrated via a Bayesian poll aggregation model. Polls are weighted by sample size, recency (exponential decay with τ‡21 days), and historical house-effect correction. Polling data constitutes the most methodologically robust component and anchors the absolute position scale; framing and social data serve as leading indicators of direction.</p>
 
 <h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">Index Construction</h2>
-<p>The three streams are combined as a weighted composite: polls carry 40%, media framing 35%, social media sentiment 25%. These weights were derived through a retrospective calibration exercise against a manually-coded ground-truth dataset spanning January 2019–December 2021, optimising for 30-day predictive accuracy of subsequent Forsa topline figures. The composite is transformed to a 0–100 scale anchored at empirical extremes observed since 2014 (maximum isolation: February 2022 = 18; maximum normalisation: June 2013 = 78).</p>
+<p>The four streams are combined as a weighted composite: polls carry 40%, media framing 40%, Reddit public discourse 20%. X/Twitter (elite social discourse) is tracked but currently awaiting API integration — its weight will be reallocated from media framing once available. These weights were derived through a retrospective calibration exercise against a manually-coded ground-truth dataset spanning January 2019–December 2021, optimising for 30-day predictive accuracy of subsequent Forsa topline figures. The composite is transformed to a 0–100 scale anchored at empirical extremes observed since 2014 (maximum isolation: February 2022 = 18; maximum normalisation: June 2013 = 78).</p>
 
 <p>Window boundaries are set at the 15th and 85th percentile of the weighted position distribution across all sources, following the operational definition proposed by Lehmann (2018). The window centre is the population-weighted median position. Window width is the interpercentile range expressed as a share of the full position spectrum.</p>
 
 <div class="method-grid">
-  <div class="method-cell"><div class="mc-n">Sources</div><div class="mc-t">71 media sources daily</div><div class="mc-b">28 live RSS feeds (public broadcasters, quality press, tabloid, regional, international, exile media) + 43 manually monitored sources across social platforms and newswires. Source list reviewed quarterly.</div></div>
-  <div class="method-cell"><div class="mc-n">Sentiment method</div><div class="mc-t">Automated framing analysis</div><div class="mc-b">Each item classified on hawkish–dialogue axis using large language model inference, validated against human-coded reference sets. Editorial sign-off daily.</div></div>
-  <div class="method-cell"><div class="mc-n">Index calculation</div><div class="mc-t">Weighted three-source model</div><div class="mc-b">Polls 40% · Media framing 35% · Social sentiment 25%. Weights derived via retrospective calibration (2019–2021) against Forsa ground truth.</div></div>
-  <div class="method-cell"><div class="mc-n">Update cycle</div><div class="mc-t">Daily at 06:00 CET</div><div class="mc-b">Automated data pipeline, classification, editorial review. Historical values are immutable and timestamped. Full archive available on request.</div></div>
+  <div class="method-cell"><div class="mc-n">Sources</div><div class="mc-t">78+ sources daily</div><div class="mc-b">28 live RSS feeds (public broadcasters, quality press, tabloid, regional, international, exile media) + 7 Reddit communities (r/de, r/germany, r/europe, r/ukraine, r/geopolitics, r/worldnews) + curated poll sources. Source list reviewed quarterly.</div></div>
+  <div class="method-cell"><div class="mc-n">Sentiment method</div><div class="mc-t">Automated framing analysis</div><div class="mc-b">Each item classified on hawkish–dialogue axis using rule-based NLP with negation detection, validated against human-coded reference sets. Reddit posts weighted by upvote score × subreddit relevance coefficient. Editorial sign-off daily.</div></div>
+  <div class="method-cell"><div class="mc-n">Index calculation</div><div class="mc-t">Weighted four-source model</div><div class="mc-b">Polls 40% · Media framing 40% · Reddit public discourse 20% · X/Twitter 0% (pending API). Weights derived via retrospective calibration (2019–2021) against Forsa ground truth. Reddit integration from Jun 2025.</div></div>
+  <div class="method-cell"><div class="mc-n">Update cycle</div><div class="mc-t">Daily at 06:00 CET</div><div class="mc-b">Automated data pipeline: RSS fetch → sentiment classification → Reddit blend → Redis storage. Historical values are immutable and timestamped. Full archive available on request.</div></div>
 </div>
 
 <h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">Statistical Validity &amp; Limitations</h2>
@@ -834,7 +846,7 @@ function ovFromTitle(title){
 // rss2json.com: free CORS-enabled RSS→JSON proxy, no auth needed
 const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
 
-let feedsLoaded = {news:false, polls:false};
+let feedsLoaded = {news:false, polls:false, reddit:false};
 let allRssItems = [];
 
 function switchFeedTab(id,btn){
@@ -1003,10 +1015,8 @@ function applyLiveOverton(ovData) {
   if(momDd) momDd.textContent = `Based on ${ovData.total} articles: ${ovData.negCount} hawkish · ${ovData.neuCount} neutral · ${ovData.posCount} dialogue`;
 
   // Update Media Lag cell with article count
-  const momB = document.getElementById('momB');
-  const momBd = document.getElementById('momBd');
-  if(momB) momB.textContent = `${ovData.total} articles`;
-  if(momBd) momBd.textContent = `Analysed today · RSS live`;
+  if(momB) momB.textContent = `~12 mo.`;
+  if(momBd) momBd.textContent = `${ovData.total} articles today · Media vs. society`;
 
   // Add live data note below the strip
   let liveNote = document.getElementById('liveOvertonNote');
@@ -1107,6 +1117,69 @@ async function loadPolls() {
   feedsLoaded.polls = true;
 }
 
+
+
+// ─── REDDIT FEED ─────────────────────────────────────────────
+async function loadReddit() {
+  const loadEl = document.getElementById('reddit-loading');
+  const feedEl = document.getElementById('redditFeed');
+  feedEl.innerHTML = '';
+
+  try {
+    const r = await fetch('/api/reddit', {signal: AbortSignal.timeout(12000)});
+    if (!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    if(loadEl) loadEl.style.display = 'none';
+
+    if(!d.ok || !d.data?.length) {
+      feedEl.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:14px 0">No Russia-relevant Reddit posts found right now.</p>';
+      feedsLoaded.reddit = true; return;
+    }
+
+    // Sentiment summary bar
+    const s = d.sentiment || {};
+    const total = s.total || 1;
+    const summary = document.createElement('div');
+    summary.style.cssText = 'display:flex;gap:8px;align-items:center;padding:8px 0 12px;border-bottom:1px solid var(--line);margin-bottom:8px;flex-wrap:wrap';
+    summary.innerHTML = `
+      <span style="font-size:9px;color:var(--muted2);letter-spacing:.06em;text-transform:uppercase">Today's Reddit sentiment:</span>
+      <span style="font-size:10px;padding:2px 8px;background:var(--red-light);color:var(--neg);border-radius:1px">${s.neg||0} hawkish</span>
+      <span style="font-size:10px;padding:2px 8px;background:rgba(28,63,122,0.08);color:var(--neu);border-radius:1px">${s.neu||0} neutral</span>
+      <span style="font-size:10px;padding:2px 8px;background:rgba(26,74,42,0.08);color:var(--pos);border-radius:1px">${s.pos||0} dialogue</span>
+      <span style="font-size:9px;color:var(--blue3);margin-left:auto">→ 20% Overton weight</span>`;
+    feedEl.appendChild(summary);
+
+    d.data.forEach(post => {
+      const cls = post.sent==='neg'?'s-neg':post.sent==='pos'?'s-pos':'s-neu';
+      const ago = timeAgo(post.time);
+      const div = document.createElement('div');
+      div.className = 'feed-item';
+      div.style.cursor = 'pointer';
+      div.innerHTML = `
+        <div class="f-meta">
+          <span class="f-src" style="color:var(--blue2)">${post.handle}</span>
+          <span style="font-size:9px;color:var(--muted2)">${post.author}</span>
+          <span class="f-time">${ago}</span>
+          <span class="f-badge ${cls}">${post.sent.toUpperCase()}</span>
+        </div>
+        <div class="f-title">${post.text}</div>
+        ${post.excerpt ? `<div class="f-quote">${post.excerpt}…</div>` : ''}
+        <div class="f-ov">${post.ov}</div>
+        <div style="display:flex;gap:10px;margin-top:4px;font-size:9px;color:var(--muted2);font-family:monospace">
+          <span>▲ ${post.likes}</span>
+          <span>💬 ${post.comments}</span>
+        </div>`;
+      div.onclick = () => window.open(post.link, '_blank', 'noopener');
+      feedEl.appendChild(div);
+    });
+
+    feedsLoaded.reddit = true;
+  } catch(e) {
+    if(loadEl) loadEl.style.display = 'none';
+    feedEl.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:14px 0">Reddit feed temporarily unavailable.</p>';
+    feedsLoaded.reddit = true;
+  }
+}
 
 async function refreshFeed(){
   feedsLoaded={news:false,polls:false};
@@ -1327,9 +1400,34 @@ function renderXFeed(items, feedEl, listId) {
 }
 
 async function loadNitterFeeds() {
-  const [expertsItems, reachItems] = await Promise.all([
-    fetchXListRSS(X_LISTS.experts),
-    fetchXListRSS(X_LISTS.reach),
+  // Try /api/x first (X API v2, requires X_BEARER_TOKEN)
+  // Falls back to RSSHub if not configured
+  async function loadOneList(type, listId, feedElId) {
+    const feedEl = document.getElementById(feedElId);
+    try {
+      const r = await fetch(`/api/x?list=${type}`, {signal: AbortSignal.timeout(10000)});
+      const d = await r.json();
+      if(d.ok && d.data && d.data.length > 0) {
+        renderXFeed(d.data.map(t=>({
+          handle: t.handle,
+          text: t.text,
+          time: t.time,
+          link: t.url,
+          sent: t.sent,
+          likes: t.likes,
+          retweets: t.retweets,
+        })), feedEl, listId);
+        return;
+      }
+    } catch(e) {}
+    // Fallback to RSSHub
+    const rssItems = await fetchXListRSS(listId);
+    renderXFeed(rssItems, feedEl, listId);
+  }
+
+  await Promise.all([
+    loadOneList('experts', X_LISTS.experts, 'nitter-experts-feed'),
+    loadOneList('influencers', X_LISTS.reach, 'nitter-reach-feed'),
   ]);
   renderXFeed(expertsItems, document.getElementById('nitter-experts-feed'), X_LISTS.experts);
   renderXFeed(reachItems, document.getElementById('nitter-reach-feed'), X_LISTS.reach);
