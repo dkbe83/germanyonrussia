@@ -11,6 +11,18 @@ async function getRedisClient() {
   return client;
 }
 
+
+async function getRedditSentiment(client) {
+  try {
+    const raw = await client.get('reddit:sentiment');
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    // Only use if from today
+    if (d.date !== new Date().toISOString().slice(0, 10)) return null;
+    return d;
+  } catch (e) { return null; }
+}
+
 const RSS_SOURCES = [
   'https://www.tagesschau.de/xml/rss2/',
   'https://www.spiegel.de/schlagzeilen/tops/index.rss',
@@ -30,15 +42,28 @@ const RSS_SOURCES = [
 ];
 
 const RUSSIA_KW = [
-  'russland','russia','ukraine','krieg','war','putin','moskau','moscow',
-  'sanktion','sanction','waffenstillstand','ceasefire','verhandlung',
-  'negotiat','kriegsmüdigkeit','war fatigue','nato','krim','crimea',
-  'donbass','annexion','wagner','selenskyj','zelensky','lawrow','lavrov',
+  'russland','russisch','ukraine','putin','moskau','sanktion',
+  'waffenstillstand','kriegsmüdigkeit','ostpolitik','wagner',
+  'nordstream','lukaschenko','belarus','selenskyj','lawrow','medwedew',
+  'annexion','donbass','donezk','luhansk','krim','kreml',
+  'russia','russian','ukraine','ukrainian','putin','moscow','kremlin',
+  'zelensky','zelenskyy','lavrov','crimea','donbas','bucha','mariupol',
+  'kherson','zaporizhzhia','kharkiv','nordstream','wagner group','meduza',
+  'russie','ukraine','poutine','kremlin',
+];
+
+const EXCLUDE_KW = [
+  'iran','israel','gaza','hamas','lebanon','syrien','syria',
+  'china','taiwan','nordkorea','north korea','afghanistan',
 ];
 
 function isRussiaRelated(text) {
   const t = (text || '').toLowerCase();
-  return RUSSIA_KW.some(k => t.includes(k));
+  if(!RUSSIA_KW.some(k => t.includes(k))) return false;
+  const excludeHits = EXCLUDE_KW.filter(k => t.includes(k)).length;
+  const russiaHits = RUSSIA_KW.filter(k => t.includes(k)).length;
+  if(excludeHits > russiaHits) return false;
+  return true;
 }
 
 function sentimentScore(title, desc = '') {
@@ -115,9 +140,28 @@ function computeOvIndex(articles) {
   };
 }
 
+function blendWithReddit(ovData, redditSentiment) {
+  if (!redditSentiment || redditSentiment.total < 3) return ovData;
+  // Reddit = 20% weight, Media = 80% (polls handled separately)
+  const redditRaw = (redditSentiment.pos - redditSentiment.neg) / redditSentiment.total;
+  const redditCenter = Math.round(Math.max(15, Math.min(75, 45 + redditRaw * 18)));
+  const blendedCenter = Math.round(ovData.center * 0.8 + redditCenter * 0.2);
+  return {
+    ...ovData,
+    center: blendedCenter,
+    redditSentiment: redditSentiment.avgScore,
+    redditArticles: redditSentiment.total,
+    sources: 'media+reddit',
+  };
+}
+
 export default async function handler(req, res) {
   // Verify this is called by Vercel Cron or manually with secret
-
+  const authHeader = req.headers['authorization'];
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
 
   console.log('[cron] Starting daily Overton calculation...');
 
@@ -137,10 +181,15 @@ export default async function handler(req, res) {
 
   console.log(`[cron] Fetched ${allArticles.length} Russia-relevant articles`);
 
-  const ovData = computeOvIndex(allArticles);
+  let ovData = computeOvIndex(allArticles);
   if (!ovData) {
     return res.status(200).json({ ok: false, reason: 'No articles found' });
   }
+
+  // Blend with Reddit sentiment (20% weight)
+  const redditData = await getRedditSentiment(redisClient);
+  ovData = blendWithReddit(ovData, redditData);
+  console.log(`[cron] Reddit blend: ${redditData ? redditData.total + ' posts' : 'no data'}`);
 
   // Store in Redis
   let redisClient;
