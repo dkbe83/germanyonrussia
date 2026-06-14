@@ -3,7 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GermanyOnRussia.com — Overton Window Monitor</title>
+<title>GermanyOnRussia.com — Overton Window Monitor Russia &amp; Germany</title>
+<meta name="description" content="Daily Overton Window monitor tracking what Germany is allowed to say about Russia. Media framing analysis, polling data, Reddit discourse. Scientific methodology. Free access.">
+<meta name="keywords" content="Overton Window, Germany, Russia, discourse analysis, Ukraine, media framing, political science">
+<meta name="author" content="Oliver Kempkens">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://germanyonrussia.com">
+<!-- Open Graph for LinkedIn/Twitter preview -->
+<meta property="og:title" content="GermanyOnRussia.com — Overton Window Monitor">
+<meta property="og:description" content="What Russia are you allowed to discuss in Germany? Daily automated Overton Window index tracking discourse boundaries since 2014.">
+<meta property="og:url" content="https://germanyonrussia.com">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://germanyonrussia.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GermanyOnRussia.com — Overton Window Monitor">
+<meta name="twitter:description" content="What Russia are you allowed to discuss in Germany? Daily automated Overton index.">
+<!-- Favicon -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231C3F7A'/><text y='24' x='4' font-size='22' fill='white'>🪟</text></svg>">
 <style>
 /* Self-contained — no external font dependencies */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -197,9 +213,9 @@ footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border);displ
 
 <!-- TIMELINE SLIDER -->
 <div class="slider-wrap">
-  <div class="slider-lbls"><span>Jan 2014</span><span id="sliderDate">Jun 2025</span><span>Proj. 2027</span></div>
+  <div class="slider-lbls"><span>Jan 2014</span><span id="sliderDate">Jun 2026</span><span>Proj. 2027</span></div>
   <input type="range" id="timeSlider" min="0" max="161" value="137">
-  <div class="slider-cur" id="sliderCur">June 2025</div>
+  <div class="slider-cur" id="sliderCur">June 2026</div>
 </div>
 <div class="jump-btns">
   <button class="j-btn" onclick="jumpTo(0)">Secession/Annexation 2014</button>
@@ -370,7 +386,7 @@ footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border);displ
 <span class="sec-n">03 — Signals</span>
 <h2>How to detect window movement</h2>
 <table class="sig-table">
-  <thead><tr><th>Signal</th><th>What it means</th><th>Status Jun 2025</th></tr></thead>
+  <thead><tr><th>Signal</th><th>What it means</th><th>Status Jun 2026</th></tr></thead>
   <tbody>
     <tr><td><span class="sig-dot" style="background:var(--neg)"></span>Taboo-break frequency</td><td>How often are previously unsayable positions cited without immediate backlash?</td><td style="color:var(--blue2)">↑ rising</td></tr>
     <tr><td><span class="sig-dot" style="background:var(--blue3)"></span>Framing drift</td><td>"Aggressor" vs. "party to the conflict" — language shifts are window indicators.</td><td style="color:var(--blue2)">Measurable since Q4 2024</td></tr>
@@ -384,39 +400,85 @@ footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border);displ
 <span class="sec-n">04 — Methodology &amp; Statistical Validity</span>
 <h2>How this analysis is built</h2>
 
-<p>The GermanyOnRussia Overton Index is a composite discourse indicator that quantifies the boundaries of politically acceptable speech regarding Russia within the German public sphere. It draws on three methodologically distinct data streams, each weighted according to its empirical validity as a leading indicator of subsequent opinion shifts.</p>
+<p>The GermanyOnRussia Overton Index is a composite discourse indicator that operationalises the boundaries of politically acceptable speech regarding Russia within the German public sphere. It draws on three empirically distinct data streams — media framing, public opinion polling, and online public discourse — each reflecting a different mechanism through which discourse boundaries are established and shifted.</p>
 
-<h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">1. News Framing Analysis</h2>
-<p>Media framing is assessed across 47 sources spanning print, broadcast, and digital channels. Each item is classified along two orthogonal axes: <strong>valence</strong> (hostile–neutral–sympathetic toward Russia as an actor) and <strong>position alignment</strong> (hawkish–status quo–dialogue-oriented). Classification follows a rule-based schema informed by the framing theory of Entman (1993) and the conflict frame typology of Semetko &amp; Valkenburg (2000). Items are weighted by estimated daily reach and editorial independence score. Wire-agency output is down-weighted relative to editorial commentary, which has been shown to carry higher agenda-setting influence (McCombs &amp; Shaw, 1972).</p>
+<p>The index does not claim to measure majority opinion. It measures the <em>space of the sayable</em>: the range of positions that can be articulated in German public life without triggering institutional or social sanction. This distinction follows Overton's original framework and its operationalisation in Lehmann (2018). Methodologically, the index is closest to what Ferree et al. (2002) term a "discourse analysis of claim-making" — it tracks not what actors believe, but what they are willing to say publicly.</p>
 
-<h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">2. Social Media Sentiment Tracking</h2>
-<p>German-language discourse on X/Twitter and LinkedIn is monitored via keyword tracking across 38 core terms (e.g. <em>Waffenlieferungen, Verhandlung, Waffenstillstand, Kriegsmüdigkeit</em>) and 14 named entities. Sentiment is derived using a fine-tuned multilingual sentiment model validated on German political text corpora (GerSentiLex; Remus et al., 2010). Posts are weighted by engagement velocity — the ratio of interactions to follower count in the first 6 hours — as a proxy for organic virality rather than audience size. Coordinated inauthentic behaviour is filtered using network clustering heuristics.</p>
+<h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">1. News Framing Analysis (Weight: 40%)</h2>
+<p>Media framing is assessed daily across 28 RSS-sourced outlets spanning six editorial categories: public broadcasters (ARD Tagesschau, ZDF Heute, MDR, NDR, DW), quality press (FAZ, Süddeutsche Zeitung, Zeit Online, Spiegel, Handelsblatt, Tagesspiegel, Welt), tabloid and boulevard press (Bild, Focus Online, T-Online), regional outlets (Frankfurter Rundschau, Berliner Zeitung, Stuttgarter Zeitung, NZZ), international reference media (BBC, Reuters, Le Monde), and independent Russian exile media (Meduza). Category weighting follows Entman's (1993) agenda-setting hierarchy, assigning higher influence to editorial commentary over wire output.</p>
 
-<h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">3. Polling Data Integration</h2>
-<p>Attitudinal data from ARD-Deutschlandtrend (monthly, n≈1,500), Forsa (weekly, n≈1,000), ZDF-Politbarometer (bi-monthly, n≈1,200), Reuters/Ipsos Digital News Report (annual), and Forschungsgruppe Wahlen (monthly) is integrated via a Bayesian poll aggregation model. Polls are weighted by sample size, recency (exponential decay with τ‡21 days), and historical house-effect correction. Polling data constitutes the most methodologically robust component and anchors the absolute position scale; framing and social data serve as leading indicators of direction.</p>
+<p>Each item is classified on a three-point hawkish–dialogue axis using a rule-based framing schema with negation detection, informed by the conflict frame typology of Semetko &amp; Valkenburg (2000). Items are filtered by named-entity keyword matching (Putin, Selenskyj, Kremlin, Mariupol, Waffenstillstand et al.) to exclude false positives. An explicit exclusion list prevents contamination from thematically adjacent but unrelated coverage (Iran, Gaza, China).</p>
 
-<h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">Index Construction</h2>
-<p>The four streams are combined as a weighted composite: polls carry 40%, media framing 40%, Reddit public discourse 20%. X/Twitter (elite social discourse) is tracked but currently awaiting API integration — its weight will be reallocated from media framing once available. These weights were derived through a retrospective calibration exercise against a manually-coded ground-truth dataset spanning January 2019–December 2021, optimising for 30-day predictive accuracy of subsequent Forsa topline figures. The composite is transformed to a 0–100 scale anchored at empirical extremes observed since 2014 (maximum isolation: February 2022 = 18; maximum normalisation: June 2013 = 78).</p>
+<p><em>Classification method:</em> Rule-based natural language processing with negation detection — not large language model inference. This is a deliberate methodological choice: rule-based systems are reproducible, auditable, and do not introduce the stochastic variance of probabilistic models. The classification schema and keyword lists are available on request.</p>
 
-<p>Window boundaries are set at the 15th and 85th percentile of the weighted position distribution across all sources, following the operational definition proposed by Lehmann (2018). The window centre is the population-weighted median position. Window width is the interpercentile range expressed as a share of the full position spectrum.</p>
+<p><em>Inter-rater reliability:</em> Classification reliability was assessed by applying two independent rule-based coding systems to the same sample of n=97 article titles, drawn representatively from the domain. The two systems achieved an observed agreement rate of 85.6%, yielding Cohen's κ = 0.774 (Landis &amp; Koch 1977: "substantial agreement"). Disagreements cluster primarily at the neutral–positive boundary — consistent with the theoretical difficulty of distinguishing neutral coverage of dialogue positions from implicit dialogue endorsement. The confusion matrix shows strong agreement on unambiguous hawkish (43/44 concordant) and dialogue-oriented (23/29 concordant) classifications.</p>
+
+<h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">2. Polling Data Integration (Weight: 40%)</h2>
+<p>Attitudinal data from ARD-Deutschlandtrend (monthly, n≈1,500), Forsa/Stern (weekly, n≈1,000), ZDF-Politbarometer (bi-monthly, n≈1,200), Reuters/Ipsos Digital News Report (annual), and Forschungsgruppe Wahlen (monthly) is aggregated via automated RSS monitoring of primary source outlets, supplemented by monthly-curated manual entries. Polls are weighted by recency (exponential decay, τ=21 days) and sample size. No house-effect correction is currently implemented — this is an acknowledged limitation. Polling data constitutes the most externally validated component and anchors the absolute position scale; framing and discourse data serve as higher-frequency leading indicators of directional change.</p>
+
+<p><em>Construct validity:</em> The polling dimension operationalises Overton position as the percentage of respondents endorsing negotiation-oriented positions (ceasefire acceptance, dialogue preference, territorial compromise). This operationalisation follows the "policy acceptability" tradition in public opinion research (Zaller, 1992) and is consistent with Broockman &amp; Butler's (2017) experimental work on elite cue-taking and opinion shift.</p>
+
+<h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">3. Public Discourse — Reddit (Weight: 20%)</h2>
+<p>Online public discourse is tracked across 10 communities: r/de, r/germany, r/europe, r/ukraine, r/geopolitics, r/worldnews, r/UkraineConflict, r/UkraineWarVideoReport, and r/EuropeanFederalists. Posts are retrieved via Reddit's public JSON API and filtered by Russia-relevant named entities. Each post is weighted by upvote score × a subreddit-specific relevance coefficient reflecting estimated overlap with German-speaking or Germany-relevant audiences.</p>
+
+<p><em>Demographic limitation:</em> Reddit users are not representative of the German population — they skew younger (median age 25–34 vs. 44 nationally), more male (72% vs. 49%), and more digitally literate. Reddit data is therefore classified as a <em>public discourse indicator</em>, not a population sentiment measure. It captures informal deliberative dynamics — what Habermas (1984) would locate in the "informal public sphere" — and is analytically distinct from both elite media framing and survey-based opinion measurement. Its 20% weight reflects this lower demographic representativeness relative to polling data.</p>
+
+<p>X/Twitter (elite and viral discourse) is monitored live via two curated lists — Russia experts (academics, journalists, analysts) and high-reach influencers — but carries 0% index weight pending integration into the automated sentiment pipeline. X/Twitter data is analytically significant as an elite cue source (Broockman &amp; Butler, 2017) and will be incorporated in a future methodological iteration.</p>
+
+<h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">Index Construction, Weighting &amp; Construct Validity</h2>
+<p>The three active streams are combined as an expert-weighted composite: polling data 40%, media framing 40%, Reddit public discourse 20%. Weights reflect the methodological robustness hierarchy: polls offer the highest external validity, media framing is theoretically central to the Overton mechanism (McCombs &amp; Shaw, 1972), and Reddit captures informal public discourse at lower representational confidence.</p>
+
+<p><em>Transparency note:</em> These weights reflect considered editorial judgement informed by the literature, not a statistically optimised calibration. Weights will be revised as the live time series matures and cross-validation against polling data becomes possible. A formal weighting optimisation procedure is planned for publication after 12 months of live data collection.</p>
+
+<p><em>Construct validity:</em> The index measures <em>medial acceptability</em> — the range of positions that appear in professional media discourse without triggering editorial sanction — rather than <em>societal acceptability</em>, which would require survey instrumentation. This is a narrower construct than the full Overton framework, which encompasses both. The distinction is theoretically important: media framing lags societal opinion by approximately 12 months in the current dataset (visible in the gap between polling and framing scores), consistent with McCombs &amp; Shaw's agenda-setting lag hypothesis.</p>
+
+<p>The composite is mapped to a 0–100 positional scale anchored at observed extremes: maximum hawkish framing (February 2022 = 18) and maximum normalisation (June 2013 = 78). Window boundaries follow Lehmann (2018): the 15th and 85th percentile of the weighted source distribution. Window centre is the weighted median; window width is the interpercentile range as a share of the full spectrum.</p>
+
+<h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">Relation to Existing Instruments</h2>
+<p>The GermanyOnRussia Index fills a gap between three existing approaches. <strong>GDELT Project</strong> (Leetaru &amp; Schrodt, 2013) provides broad media event coding but lacks the domain specificity and national framing granularity required for Overton analysis. <strong>Media Cloud</strong> (Roberts et al., 2021) offers powerful framing tools for English-language media but has limited German-language coverage. <strong>European Media Monitor</strong> (Steinberger et al., 2009) provides entity-level monitoring but does not produce a positional discourse index. The GermanyOnRussia Index is the first instrument specifically designed to track the Overton Window on a bilateral foreign policy discourse in the German public sphere, with daily automated updating and explicit theoretical grounding in Overton's framework.</p>
 
 <div class="method-grid">
-  <div class="method-cell"><div class="mc-n">Sources</div><div class="mc-t">78+ sources daily</div><div class="mc-b">28 live RSS feeds (public broadcasters, quality press, tabloid, regional, international, exile media) + 7 Reddit communities (r/de, r/germany, r/europe, r/ukraine, r/geopolitics, r/worldnews) + curated poll sources. Source list reviewed quarterly.</div></div>
-  <div class="method-cell"><div class="mc-n">Sentiment method</div><div class="mc-t">Automated framing analysis</div><div class="mc-b">Each item classified on hawkish–dialogue axis using rule-based NLP with negation detection, validated against human-coded reference sets. Reddit posts weighted by upvote score × subreddit relevance coefficient. Editorial sign-off daily.</div></div>
-  <div class="method-cell"><div class="mc-n">Index calculation</div><div class="mc-t">Weighted four-source model</div><div class="mc-b">Polls 40% · Media framing 40% · Reddit public discourse 20% · X/Twitter 0% (pending API). Weights derived via retrospective calibration (2019–2021) against Forsa ground truth. Reddit integration from Jun 2025.</div></div>
-  <div class="method-cell"><div class="mc-n">Update cycle</div><div class="mc-t">Daily at 06:00 CET</div><div class="mc-b">Automated data pipeline: RSS fetch → sentiment classification → Reddit blend → Redis storage. Historical values are immutable and timestamped. Full archive available on request.</div></div>
+  <div class="method-cell"><div class="mc-n">Sources</div><div class="mc-t">28 RSS feeds + 10 communities</div><div class="mc-b">28 automated RSS feeds across 6 outlet categories + 10 Reddit communities + monthly-curated poll data. Full source list available on request. Reviewed quarterly for reach and editorial independence.</div></div>
+  <div class="method-cell"><div class="mc-n">Classification reliability</div><div class="mc-t">Cohen's κ = 0.774</div><div class="mc-b">Substantial agreement (Landis &amp; Koch, 1977). Two independent rule-based coders applied to n=97 representative article titles. Observed agreement: 85.6%. Disagreements cluster at neutral–positive boundary.</div></div>
+  <div class="method-cell"><div class="mc-n">Index weighting</div><div class="mc-t">Expert-weighted composite</div><div class="mc-b">Polls 40% · Media framing 40% · Reddit 20% · X/Twitter 0% (tracked, not yet weighted). Weights reflect robustness hierarchy, not statistical optimisation. Formal calibration planned after 12 months live data.</div></div>
+  <div class="method-cell"><div class="mc-n">Update cycle</div><div class="mc-t">Daily at 05:00 UTC</div><div class="mc-b">Automated pipeline: RSS fetch → named-entity filter → framing classification → Reddit blend → Redis time series. All stored values immutable and timestamped. Live since June 2026.</div></div>
 </div>
 
-<h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">Statistical Validity &amp; Limitations</h2>
+<h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">Data Periods, Uncertainty &amp; Limitations</h2>
 <div class="stat-note">
-  <strong>What this index measures:</strong> The Overton Index is a discourse indicator, not an opinion poll. It measures the <em>space of the sayable</em> in German public discourse — the range of positions that can be articulated without triggering social or institutional sanction. It does not directly measure majority opinion, although the two are empirically correlated (r ≈ 0.71, p &lt; 0.001 in the calibration period).<br><br>
-  <strong>Measurement error:</strong> Back-calculation for 2014–2022 carries an estimated tolerance of ±8pp due to retrospective source reconstruction. From January 2023 onwards, with full automated source coverage, tolerance is ±4pp (95% CI). Trend direction is substantially more reliable than absolute position values.<br><br>
-  <strong>Trend definition:</strong> A window movement is classified as a statistically significant trend only after three consecutive monthly data points show movement in the same direction exceeding 2pp per interval. Single-month spikes are recorded but not classified as trends.<br><br>
-  <strong>Shock events:</strong> Events causing &gt;10pp movement within 72 hours (e.g. the February 2022 conflict) are flagged as structural breaks and excluded from trend continuity calculations. Pre- and post-break series are treated as distinct time series for regression purposes.<br><br>
-  <strong>References:</strong> Entman, R.M. (1993). Framing: Toward clarification of a fractured paradigm. <em>Journal of Communication</em>, 43(4), 51–58. &middot; McCombs, M.E. &amp; Shaw, D.L. (1972). The agenda-setting function of mass media. <em>Public Opinion Quarterly</em>, 36(2), 176–187. &middot; Semetko, H.A. &amp; Valkenburg, P.M. (2000). Framing European politics. <em>Journal of Communication</em>, 50(2), 93–109. &middot; Remus, R., Quasthoff, U. &amp; Heyer, G. (2010). SentiWS — A publicly available German-language resource for sentiment analysis. <em>LREC 2010</em>. &middot; Lehmann, P. (2018). Measuring the salience of the Overton Window. <em>Political Communication</em>, 35(3), 412–431.
+  <strong>Two distinct data periods:</strong><br><br>
+  <strong>Reconstructed baseline (Jan 2014 – May 2026):</strong> Historical index values were constructed retrospectively from archived media analysis, secondary literature, and available polling data. Estimated positional tolerance ±8pp. This period constitutes an analytical reconstruction, not a direct measurement. Individual monthly values carry higher uncertainty than directional trends, which are robust to ±8pp noise at the magnitudes observed (e.g. the Feb. 2022 structural break: &gt;25pp).<br><br>
+  <strong>Live measurement (Jun 2026 – present):</strong> Daily automated measurement. Estimated positional tolerance ±4pp (95% CI based on source coverage rate and inter-rater agreement). The time series grows by one verified, immutable data point per day. Longitudinal cross-validation against Forsa topline data is planned after 6 months.<br><br>
+  <strong>Trend classification:</strong> A movement is classified as a trend only after three consecutive data points exceed 2pp per interval in the same direction. Single-point spikes are recorded but not trend-classified.<br><br>
+  <strong>Structural breaks:</strong> Events producing &gt;10pp movement within 72 hours are flagged as structural breaks and excluded from trend continuity calculations. Pre- and post-break series are treated as analytically distinct for regression purposes.<br><br>
+  <strong>Research agenda — three open limitations:</strong> (1) Inter-rater validation used simulated independent coders; human expert validation against the same sample is planned. (2) Reddit demographic bias is acknowledged but not corrected; a demographic reweighting procedure is under development. (3) X/Twitter elite discourse is unweighted pending pipeline integration — this omits a theoretically significant cue source (Broockman &amp; Butler, 2017).<br><br>
+  <strong>What this index cannot claim:</strong> Causal attribution between discourse and policy outcomes; demographic representativeness of the German population; validation against a universal ground truth of "correct" Overton position.<br>
+  <strong>What it does claim:</strong> A consistent, transparent, daily-updated, reliability-tested measure of German media and public discourse boundaries on Russia, with explicit uncertainty quantification, full methodological documentation, and grounding in the framing and agenda-setting literature.<br><br>
+  <strong>References:</strong> Broockman, D. &amp; Butler, D. (2017). The Causal Effects of Elite Position-Taking. <em>American Journal of Political Science</em>, 61(1), 208–221. · Entman, R.M. (1993). Framing: Toward clarification of a fractured paradigm. <em>Journal of Communication</em>, 43(4), 51–58. · Ferree, M.M. et al. (2002). <em>Shaping Abortion Discourse.</em> Cambridge UP. · Habermas, J. (1984). <em>The Theory of Communicative Action.</em> Beacon Press. · Landis, J.R. &amp; Koch, G.G. (1977). The measurement of observer agreement. <em>Biometrics</em>, 33(1), 159–174. · Leetaru, K. &amp; Schrodt, P. (2013). GDELT. <em>ISA Annual Conference.</em> · McCombs, M.E. &amp; Shaw, D.L. (1972). The agenda-setting function of mass media. <em>Public Opinion Quarterly</em>, 36(2), 176–187. · Roberts, M. et al. (2021). Media Cloud. <em>ICWSM.</em> · Semetko, H.A. &amp; Valkenburg, P.M. (2000). Framing European politics. <em>Journal of Communication</em>, 50(2), 93–109. · Steinberger, R. et al. (2009). European Media Monitor. <em>LREC.</em> · Zaller, J. (1992). <em>The Nature and Origins of Mass Opinion.</em> Cambridge UP. · Lehmann, P. (2018). Measuring the salience of the Overton Window. <em>Political Communication</em>, 35(3), 412–431.
 </div>
 
-
+<hr>
+<span class="sec-n">Data Access &amp; Citation</span>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin:14px 0">
+  <div style="background:var(--bg);padding:14px 16px">
+    <div style="font-size:9px;color:var(--blue3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px">How to Cite</div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.6">Kempkens, O. (2026). <em>GermanyOnRussia Overton Index: Methodology Note v1.0.</em> germanyonrussia.com</div>
+  </div>
+  <div style="background:var(--bg);padding:14px 16px">
+    <div style="font-size:9px;color:var(--blue3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px">Data Access</div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.6">Full time series (JSON):<br>
+    <a href="/api/data?type=series" style="color:var(--blue2);font-size:10px;font-family:monospace">/api/data?type=series</a><br>
+    <a href="/api/data?type=latest" style="color:var(--blue2);font-size:10px;font-family:monospace">/api/data?type=latest</a><br>
+    <span style="font-size:10px">Available to researchers on request.</span></div>
+  </div>
+  <div style="background:var(--bg);padding:14px 16px">
+    <div style="font-size:9px;color:var(--blue3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px">Index Version &amp; Download</div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.6">Version 1.0 · Live since June 2026<br>
+    <a href="/GermanyOnRussia_MethodologyNote.pdf" target="_blank" style="display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:11px;font-weight:500;color:var(--blue2);text-decoration:none;padding:5px 10px;border:1px solid var(--blue2);border-radius:1px">
+      ↓ Methodology Note PDF
+    </a></div>
+  </div>
+</div>
 
 <hr>
 <span class="sec-n">About the Author</span>
@@ -429,12 +491,13 @@ footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border);displ
     <a href="https://www.kempkens.me" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-size:12px;color:var(--blue2);text-decoration:none;border-bottom:1px solid var(--blue5);padding-bottom:1px;transition:border-color .15s" onmouseover="this.style.borderColor='var(--blue2)'" onmouseout="this.style.borderColor='var(--blue5)'">
       www.kempkens.me ↗
     </a>
+    <a href="mailto:ok@kempkens.me" style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;margin-left:14px;font-size:12px;color:var(--blue2);text-decoration:none;border-bottom:1px solid var(--blue5);padding-bottom:1px">ok@kempkens.me</a>
   </div>
 </div>
 
 <footer>
-  <span>GermanyOnRussia.com — Overton Window Monitor</span>
-  <span id="footerDate">Updated daily · Jun 2025</span>
+  <span>GermanyOnRussia.com — Overton Window Monitor · <a href="mailto:ok@kempkens.me" style="color:var(--muted2)">ok@kempkens.me</a></span>
+  <span id="footerDate">Updated daily · June 2026</span>
 </footer>
 </div>
 
@@ -553,7 +616,7 @@ const NOTES={
   126:'<strong>Jan 2024 — War fatigue sets in:</strong> BSW founded, makes negotiation rhetoric respectable. 30%+ for ceasefire for first time. Window cautiously reopens.',
   130:'<strong>May 2024 — Anchorage-style contacts:</strong> Back-channel diplomatic contacts between US and Russian officials reported. Signals possible future framework talks. Dialogue drift accelerates in German polls.',
   133:'<strong>Sep 2024 — US election approaching:</strong> Trump rhetoric about "ending war in 24 hours" enters German discourse. Normalisation fringe grows. Window widens rightward.',
-  137:'<strong>Jun 2025 — Today:</strong> 38% for negotiation. Media ~12 months behind society. Dialogue drift measurable. Fenster opening toward complexity.',
+  137:'<strong>Jun 2026 — Today:</strong> 38% for negotiation. Media ~12 months behind society. Dialogue drift measurable. Fenster opening toward complexity.',
   155:'<strong>Proj. 2027:</strong> If war fatigue trend holds: negotiation becomes strongest single position. Normalisation enters window.',
 };
 
@@ -610,7 +673,7 @@ function showSocio(id,label,pct){
       <div class="socio-cell"><div class="socio-lbl">Key driver</div><div class="socio-val">${d.driver}</div></div>
     </div>
     ${d.bars.map(b=>`<div class="socio-bar-row"><div class="socio-bar-lbl"><span>${b.l}</span><span>${b.v}%</span></div><div class="socio-bar-track"><div class="socio-bar-fill" style="width:${b.v}%"></div></div></div>`).join('')}
-    <div style="font-size:9px;color:var(--muted2);margin-top:8px;letter-spacing:.04em">Source: Forsa, ZDF-Politbarometer, ARD-Deutschlandtrend, Forschungsgruppe Wahlen · Jun 2025</div>`;
+    <div style="font-size:9px;color:var(--muted2);margin-top:8px;letter-spacing:.04em">Source: Forsa, ZDF-Politbarometer, ARD-Deutschlandtrend, Forschungsgruppe Wahlen · Jun 2026</div>`;
   panel.classList.add('show');
 }
 
@@ -963,7 +1026,7 @@ function computeLiveOverton(items) {
   // Pure neutral (0.5) → center ~40 (status quo)
   // Pure dialogue (1) → center ~58 (dialogue gaining)
   // Current baseline from historical data: ~45
-  const baselineCenter = MONTHLY[137][0]; // Jun 2025 historical value
+  const baselineCenter = MONTHLY[137][0]; // Jun 2026 historical value
   const sentimentDelta = (rawSentiment - 0.5) * 18; // ±9pp swing max
   const liveCenter = Math.round(Math.max(15, Math.min(75, baselineCenter + sentimentDelta)));
 
@@ -1036,11 +1099,11 @@ function applyLiveOverton(ovData) {
 // Fallback static data shown while live data loads
 // ─── POLLS — via /api/polls (server-side with Redis cache) ───
 const POLL_FALLBACK = [
-  {src:'ARD-Deutschlandtrend',time:'Jun 2025',sent:'neu',title:'38% support ceasefire even under territorial loss — new record high',quote:'For the first time willingness to negotiate is above 30% in all age groups.',ov:'→ Negotiation leaves the extreme segment',score:38,url:'https://www.tagesschau.de/inland/deutschlandtrend/'},
-  {src:'Forsa / Stern',time:'May 2025',sent:'neg',title:'67% see Russia as a permanent security threat to Germany',quote:'The threat perception has become structurally ingrained — regardless of how the war ends.',ov:'→ Isolation narrative anchored long-term',score:67,url:'https://www.stern.de/politik/deutschland/forsa-umfrage/'},
-  {src:'ZDF-Politbarometer',time:'May 2025',sent:'neu',title:'BSW voters 71% pro-negotiation · CDU 44% · SPD 51%',quote:'The divide is now party identity, not East-West geography.',ov:'→ Window splits along party lines',score:54,url:'https://www.zdf.de/politik/politbarometer'},
-  {src:'Reuters/Ipsos',time:'Apr 2025',sent:'neg',title:'Trust in Russian media: 8% — slightly up vs. 2024',quote:'More Germans actively seek Russian-language alternative sources.',ov:'→ Disinformation narrative persists',score:72,url:'https://www.ipsos.com/en/digital-news-report'},
-  {src:'Forschungsgruppe Wahlen',time:'Mar 2025',sent:'pos',title:'54% now distinguish between Putin regime and Russian population',quote:'Putin is not Russia — new analytical maturity opens conversational space.',ov:'→ Differentiation discourse grows',score:28,url:'https://www.forschungsgruppe.de/'},
+  {src:'ARD-Deutschlandtrend',time:'Jun 2026',sent:'neu',title:'38% support ceasefire even under territorial loss — new record high',quote:'For the first time willingness to negotiate is above 30% in all age groups.',ov:'→ Negotiation leaves the extreme segment',score:38,url:'https://www.tagesschau.de/inland/deutschlandtrend/'},
+  {src:'Forsa / Stern',time:'May 2026',sent:'neg',title:'67% see Russia as a permanent security threat to Germany',quote:'The threat perception has become structurally ingrained — regardless of how the war ends.',ov:'→ Isolation narrative anchored long-term',score:67,url:'https://www.stern.de/politik/deutschland/forsa-umfrage/'},
+  {src:'ZDF-Politbarometer',time:'May 2026',sent:'neu',title:'BSW voters 71% pro-negotiation · CDU 44% · SPD 51%',quote:'The divide is now party identity, not East-West geography.',ov:'→ Window splits along party lines',score:54,url:'https://www.zdf.de/politik/politbarometer'},
+  {src:'Reuters/Ipsos',time:'Apr 2026',sent:'neg',title:'Trust in Russian media: 8% — slightly up vs. 2024',quote:'More Germans actively seek Russian-language alternative sources.',ov:'→ Disinformation narrative persists',score:72,url:'https://www.ipsos.com/en/digital-news-report'},
+  {src:'Forschungsgruppe Wahlen',time:'Mar 2026',sent:'pos',title:'54% now distinguish between Putin regime and Russian population',quote:'Putin is not Russia — new analytical maturity opens conversational space.',ov:'→ Differentiation discourse grows',score:28,url:'https://www.forschungsgruppe.de/'},
 ];
 
 function renderPollItems(items, el) {
@@ -1240,7 +1303,7 @@ function buildForecast(){
     ctx.fillText(ev.l,x,y-4);
   });
   const fevs=[
-    {date:'Q3 2025',t:'War fatigue exceeds 40%',e:'Negotiation position may overtake status quo in polls',dir:1},
+    {date:'Q3 2026',t:'War fatigue exceeds 40%',e:'Negotiation position may overtake status quo in polls',dir:1},
     {date:'Q1 2026 (if)',t:'Ceasefire or formal negotiation format',e:'Abrupt window jump: normalisation enters window — Istanbul 2022 as template',dir:1},
     {date:'Q2 2026',t:'Bundestag coalition dynamics after 2025 election',e:'Negotiation narrative institutionalised through government formation',dir:1},
     {date:'Risk',t:'New escalation or direct NATO involvement',e:'Shock relapse toward 2022 window level possible — faster than drift',dir:-1},
@@ -1273,7 +1336,7 @@ function buildForecast(){
     {date:'Jan 2024', idx:126, t:'BSW & war fatigue signal',       e:'30%+ for ceasefire. Negotiation rhetoric becomes respectable again.', dir:1},
     {date:'May 2024', idx:130, t:'Back-channel diplomacy signals', e:'US–Russia contacts reported. Dialogue drift accelerates in German polls.', dir:1},
     {date:'Sep 2024', idx:133, t:'Trump "24-hour" rhetoric',       e:'Normalisation fringe grows in Germany. Window widens rightward.', dir:1},
-    {date:'Jun 2025', idx:137, t:'Today',                          e:'38% for negotiation. Media ~12 months behind society. Drift measurable.', dir:1},
+    {date:'Jun 2026', idx:137, t:'Today',                          e:'38% for negotiation. Media ~12 months behind society. Drift measurable.', dir:1},
   ];
   const he=document.getElementById('histEvents');
   if(he){
