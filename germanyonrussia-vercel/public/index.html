@@ -19,7 +19,7 @@
 <meta name="twitter:title" content="GermanyOnRussia.com — Overton Window Monitor">
 <meta name="twitter:description" content="What Russia are you allowed to discuss in Germany? Daily automated Overton index.">
 <!-- Favicon -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231C3F7A'/><text y='24' x='4' font-size='22' fill='white'>🪟</text></svg>">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%231C3F7A'/%3E%3Crect x='4' y='4' width='11' height='11' rx='1' fill='none' stroke='white' stroke-width='2'/%3E%3Crect x='17' y='4' width='11' height='11' rx='1' fill='none' stroke='white' stroke-width='2'/%3E%3Crect x='4' y='17' width='11' height='11' rx='1' fill='none' stroke='white' stroke-width='2'/%3E%3Crect x='17' y='17' width='11' height='11' rx='1' fill='white' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
 <style>
 /* Self-contained — no external font dependencies */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1266,7 +1266,7 @@ function buildForecast(){
   const hist=MONTHLY.slice(0,138).map((d,i)=>({i,v:d[0]}));
   const proj=MONTHLY.slice(138).map((d,i)=>({i:138+i,v:d[0]}));
   const we=proj.map(p=>({i:p.i,v:Math.min(68,p.v+8+((p.i-138)*.3))}));
-  const rl=proj.map((p,i)=>({i:p.i,v:i<6?p.v-i*2:p.v-10+i*.5}));
+  const rl=proj.map((p,i)=>({i:p.i,v:Math.max(25,p.v-3-(i*.3))}));
   const xP=i=>P.l+(i/161)*gW;
   const yP=v=>P.t+gH-((v-10)/75)*gH;
   ctx.strokeStyle='rgba(28,63,122,0.05)';ctx.lineWidth=.5;ctx.setLineDash([2,4]);
