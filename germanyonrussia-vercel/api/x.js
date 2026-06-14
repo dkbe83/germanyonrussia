@@ -106,9 +106,10 @@ export default async function handler(req, res) {
     const cached = await redisClient.get(cacheKey);
     if (cached) {
       const data = JSON.parse(cached);
-      if (Date.now() - data.ts < 15 * 60 * 1000) { // 15 min
+      // Only use cache if it has data AND is less than 15 min old
+      if (data.tweets?.length > 0 && Date.now() - data.ts < 15 * 60 * 1000) {
         await redisClient.quit();
-        return res.status(200).json({ ok: true, source: 'cache', data: data.tweets });
+        return res.status(200).json({ ok: true, source: 'cache', count: data.tweets.length, data: data.tweets });
       }
     }
   } catch (e) { /* continue without cache */ }

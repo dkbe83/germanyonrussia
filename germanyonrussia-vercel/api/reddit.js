@@ -1,7 +1,6 @@
 // /api/reddit.js
-// Fetches Reddit posts about Russia/Germany from relevant subreddits
-// Uses Reddit public JSON API — completely free, no auth needed for read access
-// Rate limit: 60 requests/minute unauthenticated
+// Fetches Reddit posts via RSS (bypasses IP blocks on direct Reddit API)
+// Uses rss2json.com proxy — same as news feed, works reliably on Vercel
 
 import { createClient } from 'redis';
 
@@ -12,31 +11,27 @@ async function getRedisClient() {
   return client;
 }
 
-// Subreddits with relevant Germany/Russia discourse
-const SUBREDDITS = [
-  { name: 'de', weight: 1.4 },
-  { name: 'europe', weight: 1.0 },
-  { name: 'geopolitics', weight: 1.2 },
-  { name: 'ukraine', weight: 1.3 },
-  { name: 'worldnews', weight: 0.9 },
-  { name: 'germany', weight: 1.1 },
-  { name: 'UkraineWarVideoReport', weight: 0.8 },
-  { name: 'UkraineConflict', weight: 1.0 },
-  { name: 'russianmemes', weight: 0.5 },
-  { name: 'EuropeanFederalists', weight: 0.7 },
+const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+
+// Reddit RSS feeds — these work through rss2json proxy
+const REDDIT_RSS = [
+  { name: 'r/de',           url: 'https://www.reddit.com/r/de/search.rss?q=russland+OR+ukraine+OR+putin&sort=hot&t=week', weight: 1.4 },
+  { name: 'r/europe',       url: 'https://www.reddit.com/r/europe/search.rss?q=russia+OR+ukraine+OR+putin+OR+germany&sort=hot&t=week', weight: 1.0 },
+  { name: 'r/germany',      url: 'https://www.reddit.com/r/germany/search.rss?q=russia+OR+ukraine+OR+krieg&sort=hot&t=week', weight: 1.1 },
+  { name: 'r/ukraine',      url: 'https://www.reddit.com/r/ukraine/hot.rss', weight: 1.2 },
+  { name: 'r/geopolitics',  url: 'https://www.reddit.com/r/geopolitics/search.rss?q=russia+OR+germany+OR+ukraine&sort=hot&t=week', weight: 1.2 },
+  { name: 'r/worldnews',    url: 'https://www.reddit.com/r/worldnews/search.rss?q=russia+germany+OR+ukraine+germany&sort=hot&t=week', weight: 0.9 },
 ];
 
 const RUSSIA_KW = [
-  'russland','russia','russian','ukraine','ukrainian','putin','moscow','kremlin',
-  'zelensky','zelenskyy','selenskyj','lavrov','crimea','donbas','bucha',
-  'mariupol','kherson','zaporizhzhia','nordstream','wagner','sanctions',
-  'waffenstillstand','ceasefire','kriegsmüdigkeit','war fatigue',
-  'ostpolitik','nato','scholz','baerbock','bundeswehr',
+  'russia','russian','ukraine','ukrainian','putin','moscow','kremlin',
+  'zelensky','lavrov','crimea','donbas','sanctions','ceasefire',
+  'russland','ukraine','putin','moskau','kreml','selenskyj','waffenstillstand',
+  'kriegsmüdigkeit','ostpolitik','nordstream','wagner','bucha','mariupol',
 ];
 
 const EXCLUDE_KW = [
-  'iran','israel','gaza','hamas','china','taiwan','north korea',
-  'afghanistan','tren de aragua','venezuela',
+  'iran','israel','gaza','hamas','china','taiwan','north korea','afghanistan',
 ];
 
 function isRelevant(text) {
@@ -47,35 +42,30 @@ function isRelevant(text) {
   return excl < russ;
 }
 
-function detectSentiment(title, text = '') {
-  const t = (title + ' ' + text).toLowerCase();
-  const negateNext = ['no ','not ','kein','ohne','scheitern','failed','rejected','impossible'];
-  const hasNegation = negateNext.some(n => t.includes(n));
-
-  const negKW = ['attack','angriff','offensive','missile','drone','drohne','rakete',
-    'casualt','killed','dead','bombing','bombardier','escalat','eskalation',
-    'sanctions tighten','annexat','war crime','repression','arrested'];
-  const posKW = ['ceasefire','waffenstillstand','negotiat','verhandl','peace','frieden',
-    'dialog','agreement','einigung','diplomacy','de-escalat','deeskalation',
-    'war fatigue','kriegsmüdigkeit','talks','gespräch'];
-
+function detectSentiment(title) {
+  const t = (title || '').toLowerCase();
+  const negateNext = ['no ','not ','kein','ohne','scheitern','failed','rejected'];
+  const hasNeg = negateNext.some(n => t.includes(n));
+  const negKW = ['attack','angriff','missile','drone','drohne','casualt','killed',
+    'bombing','escalat','eskalation','annexat','war crime','repression'];
+  const posKW = ['ceasefire','waffenstillstand','negotiat','verhandl','peace',
+    'frieden','dialog','agreement','de-escalat','war fatigue','kriegsmüdigkeit'];
   const negC = negKW.filter(k => t.includes(k)).length;
   const posC = posKW.filter(k => t.includes(k)).length;
-
-  if (posC > 0 && hasNegation && negC === 0) return { sent: 'neg', score: 30 };
-  if (negC > posC) return { sent: 'neg', score: Math.min(85, 50 + negC * 8) };
-  if (posC > negC) return { sent: 'pos', score: Math.min(80, 45 + posC * 8) };
-  return { sent: 'neu', score: 45 };
+  if (posC > 0 && hasNeg && negC === 0) return 'neg';
+  if (negC > posC) return 'neg';
+  if (posC > negC) return 'pos';
+  return 'neu';
 }
 
 function ovFromPost(title, sent) {
   const t = (title || '').toLowerCase();
   if (t.includes('ceasefire') || t.includes('waffenstillstand') || t.includes('negotiat'))
     return '→ Dialogue position discussed in public discourse';
-  if (t.includes('war fatigue') || t.includes('kriegsmüdigkeit') || t.includes('tired'))
-    return '→ War fatigue signal — window drift visible in public';
+  if (t.includes('war fatigue') || t.includes('kriegsmüdigkeit'))
+    return '→ War fatigue signal — window drift visible';
   if (t.includes('sanction') || t.includes('weapon') || t.includes('arms'))
-    return '→ Hawkish framing dominant in public discourse';
+    return '→ Hawkish framing dominant';
   if (t.includes('attack') || t.includes('missile') || t.includes('drone'))
     return '→ Security framing narrows window';
   if (sent === 'pos') return '→ Dialogue-oriented framing in public discourse';
@@ -83,56 +73,45 @@ function ovFromPost(title, sent) {
   return '→ Russia discourse active in public sphere';
 }
 
-async function fetchSubreddit(subreddit, limit = 10) {
-  try {
-    // Try search endpoint first (more reliable, better filtering)
-    const searchUrl = `https://www.reddit.com/r/${subreddit}/search.json?q=russia+OR+ukraine+OR+russland+OR+putin&sort=hot&t=week&limit=15&raw_json=1&restrict_sr=1`;
-    const hotUrl = `https://www.reddit.com/r/${subreddit}/hot.json?limit=25&raw_json=1`;
-    
-    let posts = [];
-    
-    // Try search first
-    try {
-      const r = await fetch(searchUrl, {
-        headers: { 'User-Agent': 'GermanyOnRussiaMonitor/1.0 (academic research; contact: info@germanyonrussia.com)' },
-        signal: AbortSignal.timeout(8000),
-      });
-      if (r.ok) {
-        const d = await r.json();
-        posts = d?.data?.children?.map(p => p.data) || [];
-      }
-    } catch(e) {}
-    
-    // Fallback to hot if search returned nothing
-    if (posts.length === 0) {
-      const r = await fetch(hotUrl, {
-        headers: { 'User-Agent': 'GermanyOnRussiaMonitor/1.0 (academic research; contact: info@germanyonrussia.com)' },
-        signal: AbortSignal.timeout(8000),
-      });
-      if (!r.ok) return [];
-      const d = await r.json();
-      posts = d?.data?.children?.map(p => p.data) || [];
-    }
+function timeAgo(dateStr) {
+  const d = new Date(dateStr);
+  if (isNaN(d)) return '';
+  const diff = Math.floor((Date.now() - d) / 60000);
+  if (diff < 60) return `${diff}m ago`;
+  if (diff < 1440) return `${Math.floor(diff / 60)}h ago`;
+  return `${Math.floor(diff / 1440)}d ago`;
+}
 
-    return posts
-      .filter(p => p && !p.stickied && p.score > 2)
-      .filter(p => isRelevant(p.title + ' ' + (p.selftext || '')))
-      .slice(0, limit)
-      .map(p => {
-        const { sent, score } = detectSentiment(p.title, p.selftext || '');
+async function fetchRedditRSS(source) {
+  try {
+    const r = await fetch(RSS2JSON + encodeURIComponent(source.url), {
+      signal: AbortSignal.timeout(9000),
+    });
+    if (!r.ok) return [];
+    const d = await r.json();
+    if (d.status !== 'ok' || !d.items?.length) return [];
+
+    return d.items
+      .filter(item => isRelevant(item.title + ' ' + (item.description || '')))
+      .slice(0, 6)
+      .map(item => {
+        const sent = detectSentiment(item.title);
+        // Extract score from description if available
+        const scoreMatch = (item.description || '').match(/(\d+)\s*point/i);
+        const score = scoreMatch ? parseInt(scoreMatch[1]) : 10;
         return {
-          handle: `r/${p.subreddit}`,
-          author: `u/${p.author}`,
-          text: p.title,
-          excerpt: (p.selftext || '').slice(0, 200) || null,
-          time: new Date(p.created_utc * 1000).toISOString(),
-          link: `https://reddit.com${p.permalink}`,
-          likes: p.score,
-          comments: p.num_comments,
+          handle: source.name,
+          author: item.author || 'reddit',
+          text: item.title,
+          time: item.pubDate || '',
+          timeAgo: timeAgo(item.pubDate),
+          link: item.link || '',
+          likes: score,
+          comments: 0,
           sent,
-          score,
-          ov: ovFromPost(p.title, sent),
-          subreddit: p.subreddit,
+          score: sent === 'neg' ? 70 : sent === 'pos' ? 30 : 45,
+          ov: ovFromPost(item.title, sent),
+          weight: source.weight,
         };
       });
   } catch (e) {
@@ -145,58 +124,49 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
 
   const cacheKey = 'reddit:latest';
-
-  // Check Redis cache (30 min)
   let redisClient;
+
+  // Check cache (30 min)
   try {
     redisClient = await getRedisClient();
     const cached = await redisClient.get(cacheKey);
     if (cached) {
       const data = JSON.parse(cached);
-      if (Date.now() - data.ts < 30 * 60 * 1000) {
+      if (Date.now() - data.ts < 30 * 60 * 1000 && data.posts?.length > 0) {
         await redisClient.quit();
-        return res.status(200).json({ ok: true, source: 'cache', data: data.posts });
+        return res.status(200).json({ ok: true, source: 'cache', count: data.posts.length, data: data.posts, sentiment: data.sentiment });
       }
     }
   } catch (e) {}
 
-  // Fetch all subreddits in parallel
-  const results = await Promise.allSettled(
-    SUBREDDITS.map(s => fetchSubreddit(s.name, 8))
-  );
-
+  // Fetch all RSS feeds in parallel
+  const results = await Promise.allSettled(REDDIT_RSS.map(fetchRedditRSS));
   let allPosts = results
     .flatMap((r, i) => r.status === 'fulfilled'
-      ? r.value.map(p => ({ ...p, weight: SUBREDDITS[i].weight }))
+      ? r.value.map(p => ({ ...p, weight: REDDIT_RSS[i].weight }))
       : []
     )
-    // Sort by weighted score (upvotes × subreddit weight)
     .sort((a, b) => (b.likes * b.weight) - (a.likes * a.weight))
-    // Deduplicate by title similarity
     .filter((post, idx, arr) =>
       arr.findIndex(p => p.text.slice(0, 40) === post.text.slice(0, 40)) === idx
     )
     .slice(0, 15);
 
-  // Compute Reddit sentiment for Overton contribution
-  const sentimentSummary = {
+  const sentiment = {
     neg: allPosts.filter(p => p.sent === 'neg').length,
     neu: allPosts.filter(p => p.sent === 'neu').length,
     pos: allPosts.filter(p => p.sent === 'pos').length,
     total: allPosts.length,
-    avgScore: allPosts.length
-      ? Math.round(allPosts.reduce((s, p) => s + p.score, 0) / allPosts.length)
-      : 45,
+    avgScore: 45,
   };
 
-  // Store Reddit sentiment contribution in Redis for cron to use
+  // Store in Redis
   if (redisClient) {
     try {
-      const payload = { posts: allPosts, sentiment: sentimentSummary, ts: Date.now() };
+      const payload = { posts: allPosts, sentiment, ts: Date.now() };
       await redisClient.set(cacheKey, JSON.stringify(payload), { EX: 3600 });
-      // Also store sentiment separately for cron.js to read
       await redisClient.set('reddit:sentiment', JSON.stringify({
-        ...sentimentSummary,
+        ...sentiment,
         date: new Date().toISOString().slice(0, 10),
       }), { EX: 86400 });
       await redisClient.quit();
@@ -207,7 +177,7 @@ export default async function handler(req, res) {
     ok: true,
     source: 'live',
     count: allPosts.length,
-    sentiment: sentimentSummary,
+    sentiment,
     data: allPosts,
   });
 }
