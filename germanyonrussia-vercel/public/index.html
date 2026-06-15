@@ -1266,7 +1266,7 @@ function buildForecast(){
   const hist=MONTHLY.slice(0,138).map((d,i)=>({i,v:d[0]}));
   const proj=MONTHLY.slice(138).map((d,i)=>({i:138+i,v:d[0]}));
   const we=proj.map(p=>({i:p.i,v:Math.min(68,p.v+8+((p.i-138)*.3))}));
-  const rl=proj.map((p,i)=>({i:p.i,v:Math.max(25,p.v-3-(i*.3))}));
+  const rl=proj.map((p,i)=>({i:p.i,v:Math.max(30,p.v-4)}));
   const xP=i=>P.l+(i/161)*gW;
   const yP=v=>P.t+gH-((v-10)/75)*gH;
   ctx.strokeStyle='rgba(28,63,122,0.05)';ctx.lineWidth=.5;ctx.setLineDash([2,4]);
