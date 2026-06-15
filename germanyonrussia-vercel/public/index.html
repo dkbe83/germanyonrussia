@@ -218,15 +218,15 @@ footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border);displ
   <div class="slider-cur" id="sliderCur">June 2026</div>
 </div>
 <div class="jump-btns">
-  <button class="j-btn" onclick="jumpTo(0)">Secession/Annexation 2014</button>
+  <button class="j-btn" onclick="jumpTo(0)">Disputed Territory 2014</button>
   <button class="j-btn" onclick="jumpTo(23)">Minsk II 2015</button>
   <button class="j-btn" onclick="jumpTo(96)">Pre-Conflict</button>
-  <button class="j-btn" onclick="jumpTo(98)">Conflict Feb.22</button>
+  <button class="j-btn" onclick="jumpTo(98)">Armed Conflict Feb.22</button>
   <button class="j-btn" onclick="jumpTo(100)">Istanbul Talks</button>
-  <button class="j-btn" onclick="jumpTo(110)">Annexation</button>
+  <button class="j-btn" onclick="jumpTo(110)">Territorial Status Change</button>
   <button class="j-btn" onclick="jumpTo(114)">ICC Warrant</button>
   <button class="j-btn" onclick="jumpTo(120)">Wagner Mutiny</button>
-  <button class="j-btn" onclick="jumpTo(126)">War Fatigue 2024</button>
+  <button class="j-btn" onclick="jumpTo(126)">Conflict Exhaustion 2024</button>
   <button class="j-btn" onclick="jumpTo(130)">Diplomacy Signals</button>
   <button class="j-btn on" onclick="jumpTo(137)">Today</button>
   <button class="j-btn" onclick="jumpTo(155)">Proj. 2027</button>
@@ -248,7 +248,7 @@ footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border);displ
     <div class="me-val" id="momD" style="color:var(--blue2)">—</div>
     <div class="me-delta" id="momDd" style="color:var(--pos)"></div>
     <div class="me-desc">The direction and speed at which the window centre is moving towards more dialogue-oriented positions. Measured as percentage-point shift over 12 months. A positive value means the window is becoming more open to negotiation.</div>
-    <div class="me-how">Current driver: war fatigue among 38% of the population; BSW normalising talks.</div>
+    <div class="me-how">Current driver: conflict exhaustion among 38% of the population; BSW normalising talks.</div>
   </div>
   <div class="me-cell">
     <div class="me-icon">⏱</div>
@@ -344,8 +344,8 @@ footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border);displ
 <div class="fc-legend">
   <span class="fl"><span class="fl-line" style="background:var(--ink)"></span>Historical</span>
   <span class="fl"><span class="fl-line" style="background:var(--blue2)"></span>Base forecast</span>
-  <span class="fl"><span class="fl-line" style="background:var(--blue2);opacity:.4"></span>War-end scenario</span>
-  <span class="fl"><span class="fl-line" style="background:var(--neg);opacity:.35"></span>Relapse scenario</span>
+  <span class="fl"><span class="fl-line" style="background:var(--blue2);opacity:.4"></span>Settlement scenario</span>
+  <span class="fl"><span class="fl-line" style="background:var(--neg);opacity:.35"></span>Escalation scenario</span>
 </div>
 
 <div style="margin-top:20px">
@@ -405,13 +405,13 @@ footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border);displ
 <p>The index does not claim to measure majority opinion. It measures the <em>space of the sayable</em>: the range of positions that can be articulated in German public life without triggering institutional or social sanction. This distinction follows Overton's original framework and its operationalisation in Lehmann (2018). Methodologically, the index is closest to what Ferree et al. (2002) term a "discourse analysis of claim-making" — it tracks not what actors believe, but what they are willing to say publicly.</p>
 
 <h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">1. News Framing Analysis (Weight: 40%)</h2>
-<p>Media framing is assessed daily across 28 RSS-sourced outlets spanning six editorial categories: public broadcasters (ARD Tagesschau, ZDF Heute, MDR, NDR, DW), quality press (FAZ, Süddeutsche Zeitung, Zeit Online, Spiegel, Handelsblatt, Tagesspiegel, Welt), tabloid and boulevard press (Bild, Focus Online, T-Online), regional outlets (Frankfurter Rundschau, Berliner Zeitung, Stuttgarter Zeitung, NZZ), international reference media (BBC, Reuters, Le Monde), and independent Russian exile media (Meduza). Category weighting follows Entman's (1993) agenda-setting hierarchy, assigning higher influence to editorial commentary over wire output.</p>
+<p>Media framing is assessed daily across 28 RSS-sourced outlets spanning six editorial categories: public broadcasters (ARD Tagesschau, ZDF Heute, MDR, NDR, DW), quality press (FAZ, Süddeutsche Zeitung, Zeit Online, Spiegel, Handelsblatt, Tagesspiegel, Welt), tabloid and boulevard press (Bild, Focus Online, T-Online), regional outlets (Frankfurter Rundschau, Berliner Zeitung, Stuttgarter Zeitung, NZZ), international reference media (BBC, Reuters, Le Monde), and independent Russian independent Russian-language media (Meduza). Category weighting follows Entman's (1993) agenda-setting hierarchy, assigning higher influence to editorial commentary over wire output.</p>
 
-<p>Each item is classified on a three-point hawkish–dialogue axis using a rule-based framing schema with negation detection, informed by the conflict frame typology of Semetko &amp; Valkenburg (2000). Items are filtered by named-entity keyword matching (Putin, Selenskyj, Kremlin, Mariupol, Waffenstillstand et al.) to exclude false positives. An explicit exclusion list prevents contamination from thematically adjacent but unrelated coverage (Iran, Gaza, China).</p>
+<p>Each item is classified on a three-point security-oriented–dialogue axis using a rule-based framing schema with negation detection, informed by the conflict frame typology of Semetko &amp; Valkenburg (2000). Items are filtered by named-entity keyword matching (Putin, Selenskyj, Kremlin, Mariupol, Waffenstillstand et al.) to exclude false positives. An explicit exclusion list prevents contamination from thematically adjacent but unrelated coverage (Iran, Gaza, China).</p>
 
 <p><em>Classification method:</em> Rule-based natural language processing with negation detection — not large language model inference. This is a deliberate methodological choice: rule-based systems are reproducible, auditable, and do not introduce the stochastic variance of probabilistic models. The classification schema and keyword lists are available on request.</p>
 
-<p><em>Inter-rater reliability:</em> Classification reliability was assessed by applying two independent rule-based coding systems to the same sample of n=97 article titles, drawn representatively from the domain. The two systems achieved an observed agreement rate of 85.6%, yielding Cohen's κ = 0.774 (Landis &amp; Koch 1977: "substantial agreement"). Disagreements cluster primarily at the neutral–positive boundary — consistent with the theoretical difficulty of distinguishing neutral coverage of dialogue positions from implicit dialogue endorsement. The confusion matrix shows strong agreement on unambiguous hawkish (43/44 concordant) and dialogue-oriented (23/29 concordant) classifications.</p>
+<p><em>Inter-rater reliability:</em> Classification reliability was assessed by applying two independent rule-based coding systems to the same sample of n=97 article titles, drawn representatively from the domain. The two systems achieved an observed agreement rate of 85.6%, yielding Cohen's κ = 0.774 (Landis &amp; Koch 1977: "substantial agreement"). Disagreements cluster primarily at the neutral–positive boundary — consistent with the theoretical difficulty of distinguishing neutral coverage of dialogue positions from implicit dialogue endorsement. The confusion matrix shows strong agreement on unambiguous security-oriented (43/44 concordant) and dialogue-oriented (23/29 concordant) classifications.</p>
 
 <h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">2. Polling Data Integration (Weight: 40%)</h2>
 <p>Attitudinal data from ARD-Deutschlandtrend (monthly, n≈1,500), Forsa/Stern (weekly, n≈1,000), ZDF-Politbarometer (bi-monthly, n≈1,200), Reuters/Ipsos Digital News Report (annual), and Forschungsgruppe Wahlen (monthly) is aggregated via automated RSS monitoring of primary source outlets, supplemented by monthly-curated manual entries. Polls are weighted by recency (exponential decay, τ=21 days) and sample size. No house-effect correction is currently implemented — this is an acknowledged limitation. Polling data constitutes the most externally validated component and anchors the absolute position scale; framing and discourse data serve as higher-frequency leading indicators of directional change.</p>
@@ -432,7 +432,7 @@ footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border);displ
 
 <p><em>Construct validity:</em> The index measures <em>medial acceptability</em> — the range of positions that appear in professional media discourse without triggering editorial sanction — rather than <em>societal acceptability</em>, which would require survey instrumentation. This is a narrower construct than the full Overton framework, which encompasses both. The distinction is theoretically important: media framing lags societal opinion by approximately 12 months in the current dataset (visible in the gap between polling and framing scores), consistent with McCombs &amp; Shaw's agenda-setting lag hypothesis.</p>
 
-<p>The composite is mapped to a 0–100 positional scale anchored at observed extremes: maximum hawkish framing (February 2022 = 18) and maximum normalisation (June 2013 = 78). Window boundaries follow Lehmann (2018): the 15th and 85th percentile of the weighted source distribution. Window centre is the weighted median; window width is the interpercentile range as a share of the full spectrum.</p>
+<p>The composite is mapped to a 0–100 positional scale anchored at observed extremes: maximum security-oriented framing (February 2022 = 18) and maximum normalisation (June 2013 = 78). Window boundaries follow Lehmann (2018): the 15th and 85th percentile of the weighted source distribution. Window centre is the weighted median; window width is the interpercentile range as a share of the full spectrum.</p>
 
 <h2 style="font-size:16px;margin-top:24px;margin-bottom:8px">Relation to Existing Instruments</h2>
 <p>The GermanyOnRussia Index fills a gap between three existing approaches. <strong>GDELT Project</strong> (Leetaru &amp; Schrodt, 2013) provides broad media event coding but lacks the domain specificity and national framing granularity required for Overton analysis. <strong>Media Cloud</strong> (Roberts et al., 2021) offers powerful framing tools for English-language media but has limited German-language coverage. <strong>European Media Monitor</strong> (Steinberger et al., 2009) provides entity-level monitoring but does not produce a positional discourse index. The GermanyOnRussia Index is the first instrument specifically designed to track the Overton Window on a bilateral foreign policy discourse in the German public sphere, with daily automated updating and explicit theoretical grounding in Overton's framework.</p>
@@ -519,19 +519,19 @@ function idxToLabel(i){
 function getSegs(center){
   const t=Math.max(5,Math.min(95,center))/100;
   return[
-    {id:'hardliner', label:'Max. Isolation',pct:Math.max(1,Math.round(8-t*4)),  color:'#1A0A0A',win:false},
-    {id:'hawkish',   label:'Hard Line',     pct:Math.max(1,Math.round(22-t*10)),color:'#5A1A0A',win:true},
+    {id:'hardliner', label:'Max. Containment',pct:Math.max(1,Math.round(8-t*4)),  color:'#1A0A0A',win:false},
+    {id:'security-oriented',   label:'Security-First',     pct:Math.max(1,Math.round(22-t*10)),color:'#5A1A0A',win:true},
     {id:'statusquo', label:'Status Quo',    pct:Math.max(1,Math.round(38-t*8)), color:'#1C3F7A',win:true},
     {id:'dialogue',  label:'Negotiation',   pct:Math.max(1,Math.round(18+t*12)),color:'#1A5080',win:true},
-    {id:'normal',    label:'Normalisation', pct:Math.max(1,Math.round(8+t*6)),  color:'#2A4060',win:t>0.45},
-    {id:'capitulate',label:'Capitulation',  pct:Math.max(1,Math.round(6+t*4)),  color:'#1A2535',win:t>0.6},
+    {id:'normal',    label:'Re-engagement', pct:Math.max(1,Math.round(8+t*6)),  color:'#2A4060',win:t>0.45},
+    {id:'capitulate',label:'Unconditional Engagement',  pct:Math.max(1,Math.round(6+t*4)),  color:'#1A2535',win:t>0.6},
   ];
 }
 
 // ─── SOCIOGRAPHIC DATA PER SEGMENT ──────────────────────────
 const SOCIO={
   hardliner:{
-    title:'Max. Isolation — Supporter Profile',
+    title:'Max. Containment — Supporter Profile',
     age:'35–55 (peak), urban',
     party:'Greens (hardline), parts of CDU/CSU right',
     gender:'52% male',
@@ -541,8 +541,8 @@ const SOCIO={
     driver:'Rule-of-law conviction; post-WWII pacifist turned punitive',
     bars:[{l:'University degree',v:68},{l:'Urban residence',v:74},{l:'Under 45',v:38},{l:'Female',v:48}],
   },
-  hawkish:{
-    title:'Hard Line — Supporter Profile',
+  'security-oriented':{
+    title:'Security-First — Supporter Profile',
     age:'40–65, suburban/urban',
     party:'CDU/CSU, Greens, FDP',
     gender:'54% male',
@@ -568,14 +568,14 @@ const SOCIO={
     age:'25–45 + 55–75 (bimodal)',
     party:'SPD left wing, BSW, parts of Linke',
     gender:'47% male',
-    education:'Mixed; slightly lower than hawkish group',
+    education:'Mixed; slightly lower than security-oriented group',
     region:'East Germany strong (41%); West minority (29%)',
     media:'MDR, RBB, social media, alternative outlets',
-    driver:'War fatigue; economic anxiety; Ostpolitik legacy; pragmatic peace',
+    driver:'Conflict exhaustion; economic anxiety; Ostpolitik legacy; pragmatic peace',
     bars:[{l:'East Germany',v:41},{l:'BSW/Linke voters',v:71},{l:'Under 35',v:44},{l:'Worried about economy',v:68}],
   },
   normal:{
-    title:'Normalisation — Supporter Profile',
+    title:'Re-engagement — Supporter Profile',
     age:'50–70, rural/suburban',
     party:'AfD (pro-Russia wing), BSW',
     gender:'58% male',
@@ -586,7 +586,7 @@ const SOCIO={
     bars:[{l:'East Germany',v:62},{l:'AfD voters',v:55},{l:'Concerned about energy',v:74},{l:'Low media trust',v:66}],
   },
   capitulate:{
-    title:'Capitulation — Supporter Profile',
+    title:'Unconditional Engagement — Supporter Profile',
     age:'60+, rural, marginal group',
     party:'AfD far wing, fringe right',
     gender:'64% male',
@@ -599,25 +599,25 @@ const SOCIO={
 };
 
 const NOTES={
-  0:  '<strong>Jan 2014 — Pre-Secession/Annexation:</strong> Normalisation is the mainstream. Russia as economic partner is taken for granted. Dialogue is the majority position.',
-  3:  '<strong>Apr 2014 — Crimea: Secession/Annexation:</strong> Abrupt window jump. Dialogue positions become system-critical. Sanctions become sayable.',
-  12: '<strong>Jan 2015 — Escalation Donbas:</strong> Heavy fighting around Debaltseve. Hawkish positions gain ground in German media. Calls for arms deliveries first appear in mainstream debate.',
+  0:  '<strong>Jan 2014 — Pre-Secession/Territorial Status Change:</strong> Normalisation is the mainstream. Russia as economic partner is taken for granted. Dialogue is the majority position.',
+  3:  '<strong>Apr 2014 — Crimea: Disputed Territorial Change:</strong> Abrupt window jump. Dialogue positions become system-critical. Sanctions become sayable.',
+  12: '<strong>Jan 2015 — Escalation Donbas:</strong> Heavy fighting around Debaltseve. Security-oriented positions gain ground in German media. Calls for arms deliveries first appear in mainstream debate.',
   23: '<strong>Feb 2015 — Minsk II:</strong> Merkel & Hollande broker agreement in Minsk. Window briefly reopens toward dialogue. Ceasefire language becomes acceptable again.',
   48: '<strong>Mar 2017 — Macron elected:</strong> New French push for Russia dialogue; modest German echo. Window stays stable but slight normalization drift visible.',
   72: '<strong>Mar 2019 — Normandy Format revival:</strong> Zelenskyy elected, new diplomatic hopes. Window widens marginally toward negotiation.',
   86: '<strong>May 2020 — Nord Stream 2 controversy:</strong> US sanctions threat intensifies German debate. Economic normalization vs. geopolitical risk divides discourse.',
-  96: '<strong>Jan 2022 — Pre-Conflict:</strong> Troop build-up known. Window turns hawkish. Dialogue still barely in range.',
-  98: '<strong>Feb 2022 — Conflict begins:</strong> Largest window shift since 1990. Negotiation becomes taboo. Media consensus within 72 hours. Zeitenwende declared.',
+  96: '<strong>Jan 2022 — Pre-Conflict:</strong> Troop build-up known. Window turns security-oriented. Dialogue still barely in range.',
+  98: '<strong>Feb 2022 — Armed conflict begins:</strong> Largest window shift since 1990. Negotiation becomes taboo. Media consensus within 72 hours. Fundamental policy shift declared.',
   100:'<strong>Apr 2022 — Istanbul Talks:</strong> Russian and Ukrainian negotiators meet in Istanbul. Preliminary framework agreed — then abandoned after Bucha revelations. Brief window toward dialogue immediately slammed shut.',
-  104:'<strong>Jun 2022 — G7 & Sanctions:</strong> Comprehensive sanctions packages. German public supports hawkish line. Window at its narrowest post-1990.',
-  110:'<strong>Sep 2022 — Annexation declared:</strong> Russia annexes 4 Ukrainian oblasts. Negotiation becomes near-impossible politically. Window freezes at hawkish extreme.',
-  114:'<strong>Mar 2023 — ICC arrest warrant for Putin:</strong> International Criminal Court issues warrant. Dialogue with Putin personally framed as legally and morally untenable.',
+  104:'<strong>Jun 2022 — G7 & Sanctions:</strong> Comprehensive sanctions packages. German public supports security-oriented line. Window at its narrowest post-1990.',
+  110:'<strong>Sep 2022 — Territorial Status Change declared:</strong> Russia annexes 4 Ukrainian oblasts. Negotiation becomes near-impossible politically. Window freezes at security-oriented extreme.',
+  114:'<strong>Mar 2023 — ICC issues arrest warrant:</strong> International Criminal Court issues warrant. Dialogue with Putin personally framed as legally and morally untenable.',
   120:'<strong>Jun 2023 — Wagner mutiny:</strong> Prigozhin marches on Moscow. Brief window toward speculation about Russian instability. Normalisation discourse marginally declines.',
-  126:'<strong>Jan 2024 — War fatigue sets in:</strong> BSW founded, makes negotiation rhetoric respectable. 30%+ for ceasefire for first time. Window cautiously reopens.',
+  126:'<strong>Jan 2024 — Conflict exhaustion sets in:</strong> BSW founded, makes negotiation rhetoric respectable. 30%+ for ceasefire for first time. Window cautiously reopens.',
   130:'<strong>May 2024 — Anchorage-style contacts:</strong> Back-channel diplomatic contacts between US and Russian officials reported. Signals possible future framework talks. Dialogue drift accelerates in German polls.',
   133:'<strong>Sep 2024 — US election approaching:</strong> Trump rhetoric about "ending war in 24 hours" enters German discourse. Normalisation fringe grows. Window widens rightward.',
   137:'<strong>Jun 2026 — Today:</strong> 38% for negotiation. Media ~12 months behind society. Dialogue drift measurable. Fenster opening toward complexity.',
-  155:'<strong>Proj. 2027:</strong> If war fatigue trend holds: negotiation becomes strongest single position. Normalisation enters window.',
+  155:'<strong>Proj. 2027:</strong> If conflict exhaustion trend holds: negotiation becomes strongest single position. Normalisation enters window.',
 };
 
 // ─── RENDER STRIP ───────────────────────────────────────────
@@ -699,14 +699,14 @@ function jumpTo(i){
 
 // ─── TOPIC MAP ──────────────────────────────────────────────
 const TOPICS=[
-  ['War crimes',-0.85,52,0.08,-0.2],['Sanctions',-0.55,48,0.12,-0.1],
+  ['Alleged IHL violations',-0.85,52,0.08,-0.2],['Sanctions',-0.55,48,0.12,-0.1],
   ['Arms deliveries',-0.65,44,0.15,0.0],['Putin',-0.80,58,0.06,-0.1],
-  ['War fatigue',-0.10,38,0.20,0.6],['Negotiation',0.15,35,0.25,0.8],
+  ['Conflict exhaustion',-0.10,38,0.20,0.6],['Negotiation',0.15,35,0.25,0.8],
   ['Ceasefire',0.20,32,0.28,0.7],['Energy prices',-0.20,28,0.18,0.1],
   ['Disinformation',-0.60,30,0.10,0.2],['BSW',0.05,22,0.30,0.5],
   ['Russian culture',0.45,18,0.05,-0.1],['Civilians',-0.30,25,0.10,0.0],
   ['NATO',-0.40,35,0.12,-0.1],['Territory',0.10,20,0.30,0.4],
-  ['Dialogue',0.30,28,0.22,0.6],['Propaganda',-0.70,32,0.10,0.1],
+  ['Dialogue',0.30,28,0.22,0.6],['State-affiliated communication',-0.70,32,0.10,0.1],
   ['Peace',0.50,24,0.20,0.5],['Economic damage',-0.25,22,0.14,0.1],
 ];
 function updateTopicMap(idx){
@@ -795,7 +795,7 @@ const RSS_SOURCES = [
   {name:'Reuters',             url:'https://feeds.reuters.com/Reuters/worldNews',                 lang:'en'},
   {name:'Guardian',            url:'https://www.theguardian.com/world/russia/rss',               lang:'en'},
   {name:'Le Monde (FR)',       url:'https://www.lemonde.fr/international/rss_full.xml',          lang:'fr'},
-  // Independent Russian-language sources (exile media)
+  // Independent Russian-language sources (independent Russian-language media)
   {name:'Meduza (EN)',         url:'https://meduza.io/en/rss/all',                               lang:'en'},
 ];
 
@@ -806,7 +806,7 @@ const RUSSIA_KW = [
   'selenskyj','lawrow','medwedew','lukaschenko',
   'waffenstillstand','kriegsmüdigkeit','ostpolitik',
   'nordstream','nord stream','wagner','belarus','krim',
-  'donbass','donezk','luhansk','annexion','zeitenwende',
+  'donbass','donezk','luhansk','territorial status change','zeitenwende',
   // English — named entities only
   'russia','russian','ukraine','ukrainian','putin','moscow','kremlin',
   'zelensky','zelenskyy','lavrov','medvedev','crimea','donbas',
@@ -863,7 +863,7 @@ function sentimentFromTitle(title){
   const negKW = [
     'angriff','offensive','bombardier','rakete','drohne','missile','drone',
     'eskalation','escalat','verhaftet','arrested','tote','opfer','casualt',
-    'repression','annexion','annexat','besatzung','occupation',
+    'repression','territorial status change','annexat','besatzung','occupation',
     'kriegsverbrechen','war crime','sanctions tighten','sanktionen verschärft',
     'abschiessen','abschuss','beschuss','shelling',
   ];
@@ -872,7 +872,7 @@ function sentimentFromTitle(title){
     'waffenstillstand','ceasefire','friedensgespräch','peace talk',
     'waffenruhe','einigung','agreement','diplomatie','diplomacy',
     'verhandlungslösung','negotiated','deeskalation','de-escalat',
-    'kriegsmüdigkeit','war fatigue','gesprächsbereitschaft',
+    'kriegsmüdigkeit','conflict exhaustion','gesprächsbereitschaft',
   ];
 
   const negCount = negKW.filter(k => t.includes(k)).length;
@@ -895,10 +895,10 @@ function ovFromTitle(title){
   if(t.includes('waffenstillstand')||t.includes('ceasefire')||
      t.includes('friedensgespräch')||t.includes('peace talk')||
      t.includes('verhandlungslösung')) return '→ Dialogue position in play';
-  if(t.includes('kriegsmüdigkeit')||t.includes('war fatigue')||
+  if(t.includes('kriegsmüdigkeit')||t.includes('conflict exhaustion')||
      t.includes('waffenruhe')||t.includes('deeskalation')) return '→ Window drift signal — dialogue pressure growing';
   if(t.includes('sanktion')||t.includes('sanction')||
-     t.includes('waffenlieferung')||t.includes('arms delivery')) return '→ Hawkish framing dominant';
+     t.includes('waffenlieferung')||t.includes('arms delivery')) return '→ Security-oriented framing dominant';
   if(t.includes('angriff')||t.includes('attack')||t.includes('offensive')||
      t.includes('rakete')||t.includes('drohne')||t.includes('missile')) return '→ Security framing reinforced — window narrows';
   if(t.includes('verhandl')||t.includes('negotiat')||
@@ -995,7 +995,7 @@ function renderRSSItems(items, el){
 // ─── AUTO OVERTON — computed daily from RSS sentiment ────────
 
 // Maps live RSS sentiment to Overton center position
-// neg articles → hawkish pressure → lower center
+// neg articles → security-oriented pressure → lower center
 // pos/neu articles → dialogue opening → higher center
 // Weighted by recency (newer articles count more)
 
@@ -1012,7 +1012,7 @@ function computeLiveOverton(items) {
     // Exponential decay: articles older than 48h count half as much
     const weight = Math.exp(-ageHours / 48) * (item.src ? 1 : 0.5);
     const sent = item.sent || sentimentFromTitle(item.title + ' ' + item.desc);
-    // neg → 0 (hawkish), neu → 0.5, pos → 1 (dialogue)
+    // neg → 0 (security-oriented), neu → 0.5, pos → 1 (dialogue)
     const sentScore = sent === 'neg' ? 0 : sent === 'pos' ? 1 : 0.5;
     weightedScore += sentScore * weight;
     totalWeight += weight;
@@ -1022,7 +1022,7 @@ function computeLiveOverton(items) {
   const rawSentiment = weightedScore / totalWeight; // 0..1
 
   // Map onto Overton center scale
-  // Pure hawkish (0) → center ~22 (hard line dominant)
+  // Pure security-oriented (0) → center ~22 (hard line dominant)
   // Pure neutral (0.5) → center ~40 (status quo)
   // Pure dialogue (1) → center ~58 (dialogue gaining)
   // Current baseline from historical data: ~45
@@ -1075,7 +1075,7 @@ function applyLiveOverton(ovData) {
   }
   const drift = ovData.center - prev;
   if(momD) momD.textContent = (drift > 0 ? '+' : '') + drift.toFixed(1) + 'pp today';
-  if(momDd) momDd.textContent = `Based on ${ovData.total} articles: ${ovData.negCount} hawkish · ${ovData.neuCount} neutral · ${ovData.posCount} dialogue`;
+  if(momDd) momDd.textContent = `Based on ${ovData.total} articles: ${ovData.negCount} security-oriented · ${ovData.neuCount} neutral · ${ovData.posCount} dialogue`;
 
   // Update Media Lag cell with article count
   if(momB) momB.textContent = `~12 mo.`;
@@ -1206,7 +1206,7 @@ async function loadReddit() {
     summary.style.cssText = 'display:flex;gap:8px;align-items:center;padding:8px 0 12px;border-bottom:1px solid var(--line);margin-bottom:8px;flex-wrap:wrap';
     summary.innerHTML = `
       <span style="font-size:9px;color:var(--muted2);letter-spacing:.06em;text-transform:uppercase">Today's Reddit sentiment:</span>
-      <span style="font-size:10px;padding:2px 8px;background:var(--red-light);color:var(--neg);border-radius:1px">${s.neg||0} hawkish</span>
+      <span style="font-size:10px;padding:2px 8px;background:var(--red-light);color:var(--neg);border-radius:1px">${s.neg||0} security-oriented</span>
       <span style="font-size:10px;padding:2px 8px;background:rgba(28,63,122,0.08);color:var(--neu);border-radius:1px">${s.neu||0} neutral</span>
       <span style="font-size:10px;padding:2px 8px;background:rgba(26,74,42,0.08);color:var(--pos);border-radius:1px">${s.pos||0} dialogue</span>
       <span style="font-size:9px;color:var(--blue3);margin-left:auto">→ 20% Overton weight</span>`;
@@ -1296,17 +1296,17 @@ function buildForecast(){
   dl(we,'rgba(43,91,168,.38)',[4,3],1.1);
   dl(proj,'rgba(43,91,168,.75)',[],1.4);
   dl(hist,'#0D1B2E',[],1.7);
-  [{i:3,l:'Secession/Ann.'},{i:23,l:'Minsk II'},{i:98,l:'Conflict'},{i:100,l:'Istanbul'},{i:110,l:'Annexation'},{i:126,l:'War fatigue'},{i:130,l:'Diplomacy'},{i:138,l:'Today'}].forEach(ev=>{
+  [{i:3,l:'Disputed Territory'},{i:23,l:'Minsk II'},{i:98,l:'Conflict'},{i:100,l:'Istanbul'},{i:110,l:'Territorial Status Change'},{i:126,l:'Conflict exhaustion'},{i:130,l:'Diplomacy'},{i:138,l:'Today'}].forEach(ev=>{
     const x=xP(ev.i),y=yP(MONTHLY[Math.min(ev.i,161)][0]);
     ctx.beginPath();ctx.arc(x,y,2.5,0,Math.PI*2);ctx.fillStyle='#0D1B2E';ctx.fill();
     ctx.font='7px sans-serif';ctx.fillStyle='rgba(13,27,46,.4)';ctx.textAlign='center';ctx.textBaseline='bottom';
     ctx.fillText(ev.l,x,y-4);
   });
   const fevs=[
-    {date:'Q3 2026',t:'War fatigue exceeds 40%',e:'Negotiation position may overtake status quo in polls',dir:1},
+    {date:'Q3 2026',t:'Conflict exhaustion exceeds 40%',e:'Negotiation position may overtake status quo in polls',dir:1},
     {date:'Q1 2026 (if)',t:'Ceasefire or formal negotiation format',e:'Abrupt window jump: normalisation enters window — Istanbul 2022 as template',dir:1},
     {date:'Q2 2026',t:'Bundestag coalition dynamics after 2025 election',e:'Negotiation narrative institutionalised through government formation',dir:1},
-    {date:'Risk',t:'New escalation or direct NATO involvement',e:'Shock relapse toward 2022 window level possible — faster than drift',dir:-1},
+    {date:'Risk',t:'New escalation event',e:'Shock reversal toward 2022 window level possible — faster than drift',dir:-1},
     {date:'2027',t:'Exhaustion dynamic continues without war end',e:'Window drifts toward dialogue regardless — society consistently ahead of politics',dir:1},
   ];
   const fe=document.getElementById('fcEvents');fe.innerHTML='';
@@ -1319,21 +1319,21 @@ function buildForecast(){
 
   // Historical events log
   const HIST_EVENTS=[
-    {date:'Jan 2014', idx:0,   t:'Pre-Secession/Annexation baseline',            e:'Normalisation mainstream. Russia as economic partner standard.', dir:0},
-    {date:'Apr 2014', idx:3,   t:'Crimea: Secession/Annexation',              e:'Window jumps hawkish. Sanctions enter mainstream debate.', dir:-1},
+    {date:'Jan 2014', idx:0,   t:'Pre-Secession/Territorial Status Change baseline',            e:'Normalisation mainstream. Russia as economic partner standard.', dir:0},
+    {date:'Apr 2014', idx:3,   t:'Crimea: Disputed Territorial Change',              e:'Window jumps security-oriented. Sanctions enter mainstream debate.', dir:-1},
     {date:'Jan 2015', idx:12,  t:'Donbas escalation',              e:'Heavy fighting at Debaltseve. Arms delivery debate surfaces.', dir:-1},
     {date:'Feb 2015', idx:23,  t:'Minsk II agreement',             e:'Merkel & Hollande broker ceasefire. Dialogue window reopens briefly.', dir:1},
     {date:'Mar 2017', idx:48,  t:'Macron elected',                 e:'New French push for Russia dialogue; modest German echo.', dir:1},
     {date:'Mar 2019', idx:72,  t:'Normandy Format revival',        e:'Zelenskyy elected. Diplomatic hopes; window widens marginally.', dir:1},
     {date:'May 2020', idx:86,  t:'Nord Stream 2 controversy',      e:'US sanctions threat divides economic normalisation vs. security debate.', dir:-1},
-    {date:'Jan 2022', idx:96,  t:'Pre-Conflict troop build-up',    e:'Window turns hawkish. Dialogue barely in range.', dir:-1},
-    {date:'Feb 2022', idx:98,  t:'Conflict begins — Zeitenwende',  e:'Largest window shift since 1990. Negotiation taboo. Media consensus 72h.', dir:-1},
+    {date:'Jan 2022', idx:96,  t:'Pre-Conflict troop build-up',    e:'Window turns security-oriented. Dialogue barely in range.', dir:-1},
+    {date:'Feb 2022', idx:98,  t:'Armed conflict begins — Zeitenwende',  e:'Largest window shift since 1990. Negotiation taboo. Media consensus 72h.', dir:-1},
     {date:'Apr 2022', idx:100, t:'Istanbul Talks',                 e:'Framework drafted — abandoned after Bucha. Dialogue window slammed shut.', dir:-1},
-    {date:'Jun 2022', idx:104, t:'G7 sanctions package',           e:'Window at narrowest point post-1990. Hawkish consensus near-total.', dir:-1},
-    {date:'Sep 2022', idx:110, t:'Annexation of 4 oblasts',        e:'Negotiation near-impossible politically. Window frozen at hawkish extreme.', dir:-1},
-    {date:'Mar 2023', idx:114, t:'ICC arrest warrant for Putin',   e:'Direct dialogue with Putin framed as legally and morally untenable.', dir:-1},
+    {date:'Jun 2022', idx:104, t:'G7 sanctions package',           e:'Window at narrowest point post-1990. Security-oriented consensus near-total.', dir:-1},
+    {date:'Sep 2022', idx:110, t:'Disputed territorial incorporation of 4 oblasts',        e:'Negotiation near-impossible politically. Window frozen at security-oriented extreme.', dir:-1},
+    {date:'Mar 2023', idx:114, t:'ICC issues arrest warrant',   e:'Direct dialogue with Putin framed as legally and morally untenable.', dir:-1},
     {date:'Jun 2023', idx:120, t:'Wagner mutiny',                  e:'Speculation about Russian instability. Normalisation discourse weakens.', dir:0},
-    {date:'Jan 2024', idx:126, t:'BSW & war fatigue signal',       e:'30%+ for ceasefire. Negotiation rhetoric becomes respectable again.', dir:1},
+    {date:'Jan 2024', idx:126, t:'BSW & conflict exhaustion signal',       e:'30%+ for ceasefire. Negotiation rhetoric becomes respectable again.', dir:1},
     {date:'May 2024', idx:130, t:'Back-channel diplomacy signals', e:'US–Russia contacts reported. Dialogue drift accelerates in German polls.', dir:1},
     {date:'Sep 2024', idx:133, t:'Trump "24-hour" rhetoric',       e:'Normalisation fringe grows in Germany. Window widens rightward.', dir:1},
     {date:'Jun 2026', idx:137, t:'Today',                          e:'38% for negotiation. Media ~12 months behind society. Drift measurable.', dir:1},
